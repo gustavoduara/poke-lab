@@ -129,22 +129,20 @@ small {
 }
 
 .bowl {
-  display: flex;
-  flex-wrap: wrap;
-  place-content: center;
-  gap: 6px;
-  width: min(260px, 100%);
+  width: min(360px, 100%);
   aspect-ratio: 1;
   margin: 0 auto;
-  padding: 36px;
-  border: 10px solid #e9dfcc;
-  border-radius: 50%;
+  cursor: grab;
 }
 
-.porcao {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+.bowl:active {
+  cursor: grabbing;
+}
+
+.dica {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--suave);
 }
 
 .total strong {
@@ -166,4 +164,9 @@ footer {
   .resumo {
     position: static;
   }
+}
+
+/* no celular, arrastar na vertical sobre o bowl continua rolando a pagina */
+.bowl * {
+  touch-action: pan-y !important;
 }

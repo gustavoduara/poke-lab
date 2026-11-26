@@ -62,7 +62,7 @@ export default function Montador() {
       </div>
 
       <aside className="resumo">
-        <PreviaBowl itens={escolhidos} />
+        <PreviaBowl />
         <ul>
           {escolhidos.map((item) => (
             <li key={item.id}>{item.nome}</li>
