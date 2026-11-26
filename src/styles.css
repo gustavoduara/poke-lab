@@ -1,0 +1,169 @@
+:root {
+  --fundo: #0f1b1d;
+  --painel: #17292c;
+  --texto: #f2ede4;
+  --suave: #a9bcb8;
+  --destaque: #fa8a5c;
+  font-family: system-ui, sans-serif;
+  color: var(--texto);
+  background: var(--fundo);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+}
+
+.topo {
+  text-align: center;
+  padding: 64px 16px 40px;
+}
+
+.topo h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  margin: 8px 0;
+}
+
+.topo p {
+  color: var(--suave);
+}
+
+.topo .marca {
+  color: var(--destaque);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.topo a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: var(--destaque);
+  color: var(--fundo);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.montador {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+legend {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+small {
+  color: var(--suave);
+  font-weight: 400;
+}
+
+.opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: var(--painel);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.opcao[aria-pressed='true'] {
+  border-color: var(--destaque);
+}
+
+.opcao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.amostra {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.resumo {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--painel);
+  text-align: center;
+}
+
+.resumo ul {
+  list-style: none;
+  padding: 0;
+  color: var(--suave);
+}
+
+.bowl {
+  display: flex;
+  flex-wrap: wrap;
+  place-content: center;
+  gap: 6px;
+  width: min(260px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 36px;
+  border: 10px solid #e9dfcc;
+  border-radius: 50%;
+}
+
+.porcao {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.total strong {
+  display: block;
+  font-size: 2rem;
+}
+
+footer {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--suave);
+}
+
+@media (max-width: 760px) {
+  .montador {
+    grid-template-columns: 1fr;
+  }
+
+  .resumo {
+    position: static;
+  }
+}
