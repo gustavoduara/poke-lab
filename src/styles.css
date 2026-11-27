@@ -519,3 +519,140 @@ input[type='radio'] {
     transition: none;
   }
 }
+
+/* ===== celular ===== */
+@media (max-width: 760px) {
+  /* o menu ocupa uma linha só, com as quatro opções do mesmo tamanho de toque */
+  .cabecalho {
+    padding: 12px 8px 8px;
+    gap: 6px;
+  }
+
+  .logo {
+    padding: 0 8px;
+  }
+
+  nav {
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  nav a {
+    padding: 10px 7px;
+    font-size: 0.86rem;
+    white-space: nowrap;
+  }
+
+  /* duas colunas de ingredientes, com o preço embaixo do nome */
+  .opcoes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .opcao {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-content: center;
+    column-gap: 8px;
+    min-height: 54px;
+    padding: 8px 10px;
+    text-align: left;
+  }
+
+  .opcao small {
+    grid-column: 2;
+  }
+
+  fieldset {
+    min-width: 0;
+    margin-bottom: 18px;
+  }
+
+  /* o pote fica preso no topo enquanto os ingredientes rolam por baixo */
+  .montador {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 8px;
+  }
+
+  .montador h1 {
+    order: -2;
+    margin: 0 0 4px;
+    font-size: 1.5rem;
+  }
+
+  .resumo {
+    display: contents;
+  }
+
+  .montador .palco {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    order: -1;
+    width: calc(100% + 32px);
+    height: clamp(210px, 36vh, 320px);
+    height: clamp(210px, 36svh, 320px);
+    margin: 0 -16px 12px;
+    aspect-ratio: auto;
+    background: var(--fundo);
+    border-bottom: 1px solid #23393d;
+  }
+
+  /* enquanto o pote está em tela cheia, fica acima de todo o resto */
+  .montador .palco:has(.separado) {
+    z-index: 50;
+  }
+
+  .montador > .resumo > :not(.palco) {
+    text-align: center;
+  }
+
+  .montador .resumo ul {
+    margin: 8px 0;
+  }
+
+  .montador .resumo .total {
+    margin: 8px 0 12px;
+  }
+
+  .montador .resumo > .botao {
+    align-self: center;
+  }
+}
+
+/* telas muito estreitas */
+@media (max-width: 360px) {
+  nav a {
+    padding: 10px 4px;
+    font-size: 0.78rem;
+  }
+
+  .opcao {
+    padding: 10px;
+    font-size: 0.92rem;
+  }
+}
+
+/* celular deitado: o pote fixo não pode tomar a tela toda */
+@media (max-height: 500px) and (max-width: 950px) {
+  .montador .palco {
+    position: static;
+    height: 80vh;
+  }
+}
+
+/* em toque, o navegador não deve destacar o pote inteiro ao tocar */
+.bowl {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+@media (pointer: coarse) {
+  .so-teclado {
+    display: none;
+  }
+}

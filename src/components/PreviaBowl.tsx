@@ -52,12 +52,12 @@ export default function PreviaBowl({ pedido, descricao, fechado }: Props) {
               <button type="button" className="botao juntar" onClick={alternar}>
                 Montar de novo
               </button>
-              <p className="instrucao">Segure e arraste para girar · Esc para voltar</p>
+              <p className="instrucao">Arraste para girar<span className="so-teclado"> · Esc para voltar</span></p>
             </>
           )}
         </div>
       </div>
-      <p className="dica">Segure e arraste para girar</p>
+      <p className="dica">Arraste para girar · toque no pote para separar</p>
       <button
         type="button"
         className="botao secundario separar"
