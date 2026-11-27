@@ -291,3 +291,59 @@ footer {
 .bowl * {
   touch-action: pan-y !important;
 }
+
+.centro {
+  text-align: center;
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quantidade {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.quantidade button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--suave);
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.quantidade button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.remover {
+  border: 0;
+  background: none;
+  color: var(--destaque);
+  font: inherit;
+  cursor: pointer;
+}
+
+.subtotal {
+  font-size: 1.3rem;
+}
+
+.resumo a {
+  color: var(--destaque);
+}

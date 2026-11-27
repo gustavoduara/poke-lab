@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
+import { useCarrinho } from '../estado/carrinho'
 
 export default function Layout() {
   const { pathname } = useLocation()
+  const { itens } = useCarrinho()
+  const unidades = itens.reduce((soma, item) => soma + item.quantidade, 0)
 
   // Ao trocar de página, volta para o topo.
   useEffect(() => {
@@ -19,6 +22,7 @@ export default function Layout() {
           <NavLink to="/cardapio">Cardápio</NavLink>
           <NavLink to="/montar">Monte seu poke</NavLink>
           <NavLink to="/sobre">Sobre</NavLink>
+          <NavLink to="/carrinho">Carrinho ({unidades})</NavLink>
         </nav>
       </header>
       <main>

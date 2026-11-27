@@ -15,7 +15,7 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [x] Animação: ingredientes caindo no bowl e molho sendo despejado
 - [ ] Modelos 3D detalhados
 - [x] Páginas do restaurante: início, cardápio, montador e sobre
-- [ ] Carrinho
+- [x] Carrinho com quantidades, salvo no navegador
 - [ ] Finalização do pedido
 
 Os preços e o cardápio são fictícios.

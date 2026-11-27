@@ -1,12 +1,17 @@
 import { useState } from 'react'
-import { etapas, precoBase, type Etapa } from '../data/cardapio'
+import { Link } from 'react-router'
+import { etapas, type Etapa } from '../data/cardapio'
+import { ingredientesDe, podeAdicionar, precoDoBowl } from '../data/pedido'
+import { useCarrinho } from '../estado/carrinho'
 import PreviaBowl from './PreviaBowl'
 import { moeda } from '../data/moeda'
 
 export default function Montador() {
-  const [selecao, setSelecao] = useState<Record<string, string[]>>({})
+  const { selecao, setSelecao, adicionar } = useCarrinho()
+  const [adicionado, setAdicionado] = useState(false)
 
   function alternar(etapa: Etapa, id: string) {
+    setAdicionado(false)
     setSelecao((atual) => {
       const marcados = atual[etapa.id] ?? []
       if (marcados.includes(id)) {
@@ -18,10 +23,15 @@ export default function Montador() {
     })
   }
 
-  const escolhidos = etapas.flatMap((etapa) =>
-    etapa.opcoes.filter((opcao) => selecao[etapa.id]?.includes(opcao.id)),
-  )
-  const total = escolhidos.reduce((soma, item) => soma + item.preco, precoBase)
+  const escolhidos = ingredientesDe(selecao)
+  const total = precoDoBowl(selecao)
+  const completo = podeAdicionar(selecao)
+
+  function adicionarAoCarrinho() {
+    adicionar(selecao)
+    setSelecao({})
+    setAdicionado(true)
+  }
 
   return (
     <section className="montador">
@@ -76,6 +86,23 @@ export default function Montador() {
         </ul>
         <p className="total">
           Total <strong>{moeda(total)}</strong>
+        </p>
+        <button
+          type="button"
+          className="botao"
+          disabled={!completo}
+          onClick={adicionarAoCarrinho}
+        >
+          Adicionar ao carrinho
+        </button>
+        <p className="dica" role="status">
+          {adicionado ? (
+            <>
+              Poke adicionado! <Link to="/carrinho">Ver carrinho</Link>
+            </>
+          ) : (
+            !completo && 'Escolha uma base e pelo menos uma proteína.'
+          )}
         </p>
       </aside>
     </section>
