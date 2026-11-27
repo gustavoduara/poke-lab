@@ -9,6 +9,7 @@ import {
   SphereGeometry,
 } from 'three'
 import { alturaSuperficie, criarSorteio } from './terreno'
+import { useQueda } from './animacao'
 
 export type TipoCrocante = 'gergelim' | 'nori' | 'couve'
 
@@ -71,17 +72,15 @@ export default function Crocante3D({ tipo, ordem, fatias, temBase }: Props) {
   useLayoutEffect(() => {
     const malha = ref.current
     if (!malha) return
-    itens.forEach((item, i) => {
-      malha.setMatrixAt(i, item.matriz)
-      malha.setColorAt(i, item.cor)
-    })
-    malha.instanceMatrix.needsUpdate = true
+    itens.forEach((item, i) => malha.setColorAt(i, item.cor))
     if (malha.instanceColor) malha.instanceColor.needsUpdate = true
-    malha.computeBoundingSphere()
   }, [itens])
 
+  const matrizes = useMemo(() => itens.map((item) => item.matriz), [itens])
+  useQueda(ref, matrizes, { espalhamento: 0.8 })
+
   return (
-    <instancedMesh ref={ref} args={[forma, undefined, quantidade]} dispose={null}>
+    <instancedMesh ref={ref} args={[forma, undefined, quantidade]} dispose={null} frustumCulled={false}>
       <meshStandardMaterial roughness={aspereza} side={DoubleSide} />
     </instancedMesh>
   )

@@ -7,6 +7,7 @@ import Molho3D, { type TipoMolho } from './Molho3D'
 import Crocante3D, { type TipoCrocante } from './Crocante3D'
 import { receitas } from './receitas'
 import { fatiasComplemento, fatiasProteina } from './terreno'
+import { useFatiasFixas } from './fatias'
 
 // Perfil do bowl (raio, altura), girado em torno do eixo vertical.
 // Começa no centro do fundo, sobe por fora, contorna a borda e desce por dentro.
@@ -42,10 +43,10 @@ export type Pedido = Record<string, string[]>
 export default function Bowl3D({ pedido }: { pedido: Pedido }) {
   const base = pedido.base?.[0] as TipoBase | undefined
   const molho = pedido.molho?.[0] as TipoMolho | undefined
-  const fatiasOcupadas = [
-    ...fatiasProteina.slice(0, pedido.proteina?.length ?? 0),
-    ...fatiasComplemento.slice(0, pedido.complementos?.length ?? 0),
-  ]
+  const proteinas = useFatiasFixas(pedido.proteina ?? [], fatiasProteina)
+  const complementos = useFatiasFixas(pedido.complementos ?? [], fatiasComplemento)
+  const porcoes = [...proteinas, ...complementos]
+  const fatiasOcupadas = porcoes.map((porcao) => porcao.fatia)
 
   return (
     <Canvas camera={{ position: [0, 3.7, 5.3], fov: 40 }} dpr={[1, 2]}>
@@ -57,11 +58,8 @@ export default function Bowl3D({ pedido }: { pedido: Pedido }) {
       <Parte perfil={perfilBorda} cor="#e9dfcc" />
       <Parte perfil={perfilInterno} cor="#efe7d6" />
       {base && <Base3D key={base} tipo={base} />}
-      {pedido.proteina?.map((id, i) => (
-        <Porcao3D key={id} receita={receitas[id]} fatia={fatiasProteina[i]} temBase={!!base} />
-      ))}
-      {pedido.complementos?.map((id, i) => (
-        <Porcao3D key={id} receita={receitas[id]} fatia={fatiasComplemento[i]} temBase={!!base} />
+      {porcoes.map(({ id, fatia }) => (
+        <Porcao3D key={id} receita={receitas[id]} fatia={fatia} temBase={!!base} />
       ))}
       {molho && <Molho3D key={molho} tipo={molho} fatias={fatiasOcupadas} temBase={!!base} />}
       {pedido.crocante?.map((id, i) => (

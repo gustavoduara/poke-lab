@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
-import { CatmullRomCurve3, Vector3 } from 'three'
+import { useCallback, useEffect, useMemo } from 'react'
+import { CatmullRomCurve3, TubeGeometry, Vector3 } from 'three'
+import { useAnimacao } from './animacao'
 import { alturaSuperficie } from './terreno'
 
 export type TipoMolho = 'shoyu' | 'tare' | 'spicy'
@@ -9,6 +10,10 @@ const estilos = {
   tare: { cor: '#6e320c', espessura: 0.032, aspereza: 0.15, opacidade: 1 },
   spicy: { cor: '#f08a4b', espessura: 0.042, aspereza: 0.35, opacidade: 1 },
 }
+
+const SEGMENTOS = 900
+const LADOS = 8
+const DURACAO = 1.6
 
 type Props = { tipo: TipoMolho; fatias: number[]; temBase: boolean }
 
@@ -34,9 +39,26 @@ export default function Molho3D({ tipo, fatias, temBase }: Props) {
     return new CatmullRomCurve3(pontos)
   }, [fatias, temBase])
 
+  const geometria = useMemo(
+    () => new TubeGeometry(caminho, SEGMENTOS, espessura, LADOS, false),
+    [caminho, espessura],
+  )
+
+  // Libera a memória quando o caminho muda ou o molho sai do pedido.
+  useEffect(() => () => geometria.dispose(), [geometria])
+
+  const despejar = useCallback(
+    (tempo: number) => {
+      const progresso = Math.min(1, tempo / DURACAO)
+      // Cada trecho do tubo tem LADOS x 6 índices.
+      geometria.setDrawRange(0, Math.floor(SEGMENTOS * progresso) * LADOS * 6)
+    },
+    [geometria],
+  )
+  useAnimacao(DURACAO, despejar)
+
   return (
-    <mesh>
-      <tubeGeometry args={[caminho, 900, espessura, 8, false]} />
+    <mesh geometry={geometria}>
       <meshStandardMaterial
         color={cor}
         roughness={aspereza}

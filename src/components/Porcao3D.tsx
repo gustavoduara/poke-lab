@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, InstancedMesh, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
 import type { Camada, Receita } from './receitas'
+import { useQueda } from './animacao'
 import { apoio, centroFatia, criarSorteio } from './terreno'
 
 type Props = { receita: Receita; fatia: number; temBase: boolean }
@@ -8,25 +9,31 @@ type Props = { receita: Receita; fatia: number; temBase: boolean }
 function CamadaRepetida({ camada, pecas }: { camada: Camada; pecas: Matrix4[] }) {
   const ref = useRef<InstancedMesh>(null)
 
-  useLayoutEffect(() => {
-    const malha = ref.current
-    if (!malha) return
+  const matrizes = useMemo(() => {
     const local = new Matrix4().compose(
       new Vector3(...(camada.posicao ?? [0, 0, 0])),
       new Quaternion(),
       new Vector3(...camada.escala),
     )
-    pecas.forEach((peca, i) => {
-      malha.setMatrixAt(i, new Matrix4().multiplyMatrices(peca, local))
-      malha.setColorAt(i, new Color(camada.cores[i % camada.cores.length]))
-    })
-    malha.instanceMatrix.needsUpdate = true
-    if (malha.instanceColor) malha.instanceColor.needsUpdate = true
-    malha.computeBoundingSphere()
+    return pecas.map((peca) => new Matrix4().multiplyMatrices(peca, local))
   }, [camada, pecas])
 
+  useLayoutEffect(() => {
+    const malha = ref.current
+    if (!malha) return
+    pecas.forEach((_, i) => malha.setColorAt(i, new Color(camada.cores[i % camada.cores.length])))
+    if (malha.instanceColor) malha.instanceColor.needsUpdate = true
+  }, [camada, pecas])
+
+  useQueda(ref, matrizes)
+
   return (
-    <instancedMesh ref={ref} args={[camada.forma, undefined, pecas.length]} dispose={null}>
+    <instancedMesh
+      ref={ref}
+      args={[camada.forma, undefined, pecas.length]}
+      dispose={null}
+      frustumCulled={false}
+    >
       <meshStandardMaterial roughness={camada.brilho ?? 0.6} />
     </instancedMesh>
   )

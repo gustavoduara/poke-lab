@@ -1,5 +1,6 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
-import { Color, DoubleSide, InstancedMesh, Object3D, Vector2 } from 'three'
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react'
+import { Color, DoubleSide, InstancedMesh, Mesh, Object3D, Vector2 } from 'three'
+import { useAnimacao, useQueda } from './animacao'
 import { RAIO_BASE, alturaBase, criarSorteio } from './terreno'
 
 export type TipoBase = 'gohan' | 'integral' | 'folhas'
@@ -52,21 +53,29 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
   useLayoutEffect(() => {
     const malha = ref.current
     if (!malha) return
-    itens.forEach((item, i) => {
-      malha.setMatrixAt(i, item.matriz)
-      malha.setColorAt(i, item.cor)
-    })
-    malha.instanceMatrix.needsUpdate = true
+    itens.forEach((item, i) => malha.setColorAt(i, item.cor))
     if (malha.instanceColor) malha.instanceColor.needsUpdate = true
   }, [itens])
 
+  const matrizes = useMemo(() => itens.map((item) => item.matriz), [itens])
+  useQueda(ref, matrizes, { espalhamento: 0.6 })
+
+  const monte = useRef<Mesh>(null)
+  const abrirMonte = useCallback((tempo: number) => {
+    // Começa depois que os primeiros grãos chegam ao fundo.
+    const progresso = Math.min(1, Math.max(0.001, (tempo - 0.4) / 0.6))
+    monte.current?.scale.set(progresso, 1, progresso)
+    if (monte.current) monte.current.visible = tempo > 0.4
+  }, [])
+  useAnimacao(1, abrirMonte)
+
   return (
     <group>
-      <mesh>
+      <mesh ref={monte}>
         <latheGeometry args={[perfilMonte, 64]} />
         <meshStandardMaterial color={fundo} roughness={0.9} side={DoubleSide} />
       </mesh>
-      <instancedMesh ref={ref} args={[undefined, undefined, quantidade]}>
+      <instancedMesh ref={ref} args={[undefined, undefined, quantidade]} frustumCulled={false}>
         <sphereGeometry args={[1, 10, 8]} />
         <meshStandardMaterial roughness={ehFolha ? 0.65 : 0.55} />
       </instancedMesh>
