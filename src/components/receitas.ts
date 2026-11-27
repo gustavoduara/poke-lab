@@ -15,6 +15,7 @@ import {
   texturaCamarao,
   texturaTofu,
 } from './proteinas'
+import { cuboManga, texturaManga } from './manga'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
 type Trio = [number, number, number]
@@ -117,11 +118,18 @@ export const receitas: Record<string, Receita> = {
     ],
   },
   manga: {
-    quantidade: 18,
-    altura: 0.08,
-    inclinacao: 0.6,
+    quantidade: 17,
+    altura: 0.09,
+    inclinacao: 0.7,
     camadas: [
-      { forma: cubo, cores: ['#ffb627', '#ffa817', '#ffc445'], escala: [0.17, 0.15, 0.17], brilho: 0.35 },
+      {
+        forma: cuboManga,
+        cores: ['#ffffff', '#fff4d6', '#ffeccc'],
+        escala: [0.2, 0.15, 0.17],
+        brilho: 0.4,
+        textura: texturaManga,
+        molhado: true,
+      },
     ],
   },
   abacate: {
