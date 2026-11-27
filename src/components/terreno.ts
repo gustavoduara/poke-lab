@@ -40,3 +40,14 @@ export function centroFatia(fatia: number): [number, number] {
   const angulo = (fatia * Math.PI) / 3 + 0.5
   return [Math.cos(angulo) * RAIO_FATIA, Math.sin(angulo) * RAIO_FATIA]
 }
+
+// Altura do topo do bowl em um ponto, contando os montinhos das fatias ocupadas.
+export function alturaSuperficie(x: number, z: number, fatias: number[], temBase: boolean) {
+  const chao = apoio(Math.hypot(x, z), temBase)
+  const relevo = fatias.reduce((maior, fatia) => {
+    const [cx, cz] = centroFatia(fatia)
+    const proximidade = 1 - Math.hypot(x - cx, z - cz) / 0.6
+    return Math.max(maior, Math.min(1, proximidade * 2.2))
+  }, 0)
+  return chao + 0.09 + relevo * 0.2
+}

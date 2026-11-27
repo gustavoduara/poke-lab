@@ -3,6 +3,7 @@ import { ContactShadows, OrbitControls } from '@react-three/drei'
 import { DoubleSide, Vector2 } from 'three'
 import Base3D, { type TipoBase } from './Base3D'
 import Porcao3D from './Porcao3D'
+import Molho3D, { type TipoMolho } from './Molho3D'
 import { receitas } from './receitas'
 import { fatiasComplemento, fatiasProteina } from './terreno'
 
@@ -39,6 +40,11 @@ export type Pedido = Record<string, string[]>
 
 export default function Bowl3D({ pedido }: { pedido: Pedido }) {
   const base = pedido.base?.[0] as TipoBase | undefined
+  const molho = pedido.molho?.[0] as TipoMolho | undefined
+  const fatiasOcupadas = [
+    ...fatiasProteina.slice(0, pedido.proteina?.length ?? 0),
+    ...fatiasComplemento.slice(0, pedido.complementos?.length ?? 0),
+  ]
 
   return (
     <Canvas camera={{ position: [0, 3.7, 5.3], fov: 40 }} dpr={[1, 2]}>
@@ -56,6 +62,7 @@ export default function Bowl3D({ pedido }: { pedido: Pedido }) {
       {pedido.complementos?.map((id, i) => (
         <Porcao3D key={id} receita={receitas[id]} fatia={fatiasComplemento[i]} temBase={!!base} />
       ))}
+      {molho && <Molho3D key={molho} tipo={molho} fatias={fatiasOcupadas} temBase={!!base} />}
 
       <ContactShadows position={[0, -0.75, 0]} opacity={0.5} scale={6} blur={2.4} far={2} />
 
