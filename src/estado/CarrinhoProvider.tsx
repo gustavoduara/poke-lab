@@ -8,6 +8,7 @@ import {
   type Selecao,
 } from '../data/pedido'
 import { CarrinhoContext } from './carrinho'
+import { novoId } from './novoId'
 
 const CHAVE = 'pokelab:carrinho'
 
@@ -36,7 +37,7 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
   }, [itens])
 
   const adicionar = useCallback((nova: Selecao) => {
-    const item = { id: crypto.randomUUID(), selecao: nova, quantidade: 1 }
+    const item = { id: novoId(), selecao: nova, quantidade: 1 }
     setItens((atual) => [...atual, item])
     setConfirmado(null)
   }, [])
@@ -46,7 +47,7 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
     setItens((atual) => {
       const existente = atual.find((item) => item.sushi === sushiId)
       if (!existente) {
-        return [...atual, { id: crypto.randomUUID(), selecao: {}, sushi: sushiId, quantidade: 1 }]
+        return [...atual, { id: novoId(), selecao: {}, sushi: sushiId, quantidade: 1 }]
       }
       return atual.map((item) =>
         item === existente
