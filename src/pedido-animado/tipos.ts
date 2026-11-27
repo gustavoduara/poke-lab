@@ -1,5 +1,5 @@
 import { etapas } from '../data/cardapio'
-import type { PedidoConfirmado, Selecao } from '../data/pedido'
+import { ehPoke, type PedidoConfirmado, type Selecao } from '../data/pedido'
 
 export type ItemResumo = {
   quantidade: number
@@ -12,7 +12,8 @@ export type ItemResumo = {
 
 export type OrderSummary = {
   numero: string
-  itens: ItemResumo[]
+  itens: ItemResumo[] // só os pokes
+  outrosItens?: number // unidades além do primeiro poke, incluindo sushi
   total: number
 }
 
@@ -53,7 +54,8 @@ export function resumirPedido(pedido: PedidoConfirmado): OrderSummary {
   return {
     numero: pedido.numero,
     total: pedido.total,
-    itens: pedido.itens.map((item) => ({
+    outrosItens: pedido.itens.reduce((soma, item) => soma + item.quantidade, 0) - 1,
+    itens: pedido.itens.filter(ehPoke).map((item) => ({
       quantidade: item.quantidade,
       base: nomes(item.selecao, 'base')[0] ?? '',
       proteinas: nomes(item.selecao, 'proteina'),

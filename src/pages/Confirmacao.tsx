@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link, Navigate } from 'react-router'
 import { moeda } from '../data/moeda'
-import { ingredientesDe } from '../data/pedido'
+import { descricaoDoItem, ehPoke, nomeDoItem } from '../data/pedido'
 import { useCarrinho } from '../estado/carrinho'
 
 // A animação só é baixada quando um pedido é finalizado.
@@ -18,7 +18,9 @@ export default function Confirmacao() {
   if (!confirmado) return <Navigate to="/" replace />
 
   const entrega = confirmado.recebimento === 'entrega'
-  const mostrarAnimacao = !fechado && !jaVistos.has(confirmado.numero)
+  // A animação mostra a embalagem do poke, então só aparece se houver um no pedido.
+  const mostrarAnimacao =
+    !fechado && !jaVistos.has(confirmado.numero) && confirmado.itens.some(ehPoke)
 
   function fecharAnimacao() {
     jaVistos.add(confirmado!.numero)
@@ -43,12 +45,10 @@ export default function Confirmacao() {
       <ul className="lista">
         {confirmado.itens.map((item) => (
           <li key={item.id} className="cartao">
-            <strong>{item.quantidade}x poke</strong>
-            <p>
-              {ingredientesDe(item.selecao)
-                .map((ingrediente) => ingrediente.nome)
-                .join(', ')}
-            </p>
+            <strong>
+              {item.quantidade}x {nomeDoItem(item)}
+            </strong>
+            <p>{descricaoDoItem(item)}</p>
           </li>
         ))}
       </ul>

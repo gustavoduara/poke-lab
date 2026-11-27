@@ -30,7 +30,7 @@ function Entrada({
 
 export default function ResumoLateral({ orderSummary }: { orderSummary: OrderSummary }) {
   const [primeiro] = orderSummary.itens
-  const outros = orderSummary.itens.reduce((soma, item) => soma + item.quantidade, 0) - 1
+  const outros = orderSummary.outrosItens ?? 0
   const linhas = [
     { rotulo: 'Base', valor: primeiro.base },
     { rotulo: 'Proteína', valor: primeiro.proteinas.join(' + ') },
@@ -75,7 +75,7 @@ export default function ResumoLateral({ orderSummary }: { orderSummary: OrderSum
         </h2>
         <p style={{ margin: 0, fontSize: 20, color: '#5b7185' }}>
           Pedido #{orderSummary.numero}
-          {outros > 0 && ` · este e mais ${outros} poke${outros > 1 ? 's' : ''}`}
+          {outros > 0 && ` · este e mais ${outros} ${outros > 1 ? 'itens' : 'item'}`}
         </p>
       </Entrada>
 

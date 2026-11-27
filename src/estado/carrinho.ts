@@ -9,6 +9,7 @@ export type Estado = {
   recebimento: Recebimento
   setRecebimento: (valor: Recebimento) => void
   adicionar: (selecao: Selecao) => void
+  adicionarSushi: (sushiId: string) => void
   mudarQuantidade: (id: string, quantidade: number) => void
   remover: (id: string) => void
   // Último pedido finalizado. Fica só na memória, até recarregar a página.

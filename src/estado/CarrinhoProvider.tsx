@@ -41,6 +41,22 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
     setConfirmado(null)
   }, [])
 
+  // O mesmo sushi pedido de novo só aumenta a quantidade.
+  const adicionarSushi = useCallback((sushiId: string) => {
+    setItens((atual) => {
+      const existente = atual.find((item) => item.sushi === sushiId)
+      if (!existente) {
+        return [...atual, { id: crypto.randomUUID(), selecao: {}, sushi: sushiId, quantidade: 1 }]
+      }
+      return atual.map((item) =>
+        item === existente
+          ? { ...item, quantidade: Math.min(MAXIMO_POR_ITEM, item.quantidade + 1) }
+          : item,
+      )
+    })
+    setConfirmado(null)
+  }, [])
+
   const mudarQuantidade = useCallback((id: string, quantidade: number) => {
     const limitada = Math.min(MAXIMO_POR_ITEM, Math.max(1, quantidade))
     setItens((atual) =>
@@ -66,6 +82,7 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
         recebimento,
         setRecebimento,
         adicionar,
+        adicionarSushi,
         mudarQuantidade,
         remover,
         confirmado,

@@ -5,7 +5,7 @@ import FotoDoPoke from './FotoDoPoke'
 import { DURACAO_EM_QUADROS, QUADROS_POR_SEGUNDO, resumirPedido } from './tipos'
 import embalagem from '../assets/embalagem.jpg'
 import { moeda } from '../data/moeda'
-import { ingredientesDe, type PedidoConfirmado } from '../data/pedido'
+import { descricaoDoItem, ehPoke, nomeDoItem, type PedidoConfirmado } from '../data/pedido'
 
 const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -52,7 +52,7 @@ export default function ModalPedido({ pedido, aoFechar }: Props) {
       onClose={aoFechar}
     >
       {foto === undefined && (
-        <FotoDoPoke selecao={pedido.itens[0].selecao} aoFotografar={fotografar} />
+        <FotoDoPoke selecao={pedido.itens.find(ehPoke)!.selecao} aoFotografar={fotografar} />
       )}
 
       <div className="tela-animacao">
@@ -82,10 +82,10 @@ export default function ModalPedido({ pedido, aoFechar }: Props) {
       <ul className="resumo-celular">
         {pedido.itens.map((item) => (
           <li key={item.id}>
-            <strong>{item.quantidade}x poke:</strong>{' '}
-            {ingredientesDe(item.selecao)
-              .map((ingrediente) => ingrediente.nome)
-              .join(', ')}
+            <strong>
+              {item.quantidade}x {nomeDoItem(item)}:
+            </strong>{' '}
+            {descricaoDoItem(item)}
           </li>
         ))}
       </ul>
