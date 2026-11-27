@@ -11,7 +11,7 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [x] Proteínas em 3D: salmão, atum, camarão e tofu
 - [x] Complementos em 3D: manga, abacate, pepino, edamame, cenoura e repolho roxo
 - [x] Molhos em 3D: shoyu, tarê e maionese spicy
-- [ ] Demais ingredientes em 3D dentro do bowl
+- [x] Crocantes em 3D: gergelim, nori e couve crispy
 - [ ] Animação de entrada dos ingredientes
 - [ ] Modelos 3D detalhados
 - [ ] Páginas do restaurante e finalização do pedido

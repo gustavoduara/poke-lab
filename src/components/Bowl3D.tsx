@@ -4,6 +4,7 @@ import { DoubleSide, Vector2 } from 'three'
 import Base3D, { type TipoBase } from './Base3D'
 import Porcao3D from './Porcao3D'
 import Molho3D, { type TipoMolho } from './Molho3D'
+import Crocante3D, { type TipoCrocante } from './Crocante3D'
 import { receitas } from './receitas'
 import { fatiasComplemento, fatiasProteina } from './terreno'
 
@@ -63,6 +64,15 @@ export default function Bowl3D({ pedido }: { pedido: Pedido }) {
         <Porcao3D key={id} receita={receitas[id]} fatia={fatiasComplemento[i]} temBase={!!base} />
       ))}
       {molho && <Molho3D key={molho} tipo={molho} fatias={fatiasOcupadas} temBase={!!base} />}
+      {pedido.crocante?.map((id, i) => (
+        <Crocante3D
+          key={id}
+          tipo={id as TipoCrocante}
+          ordem={i}
+          fatias={fatiasOcupadas}
+          temBase={!!base}
+        />
+      ))}
 
       <ContactShadows position={[0, -0.75, 0]} opacity={0.5} scale={6} blur={2.4} far={2} />
 
