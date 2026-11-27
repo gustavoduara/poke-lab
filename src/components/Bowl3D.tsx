@@ -4,7 +4,7 @@ import { DoubleSide, Vector2 } from 'three'
 import Base3D, { type TipoBase } from './Base3D'
 import Porcao3D from './Porcao3D'
 import { receitas } from './receitas'
-import { fatiasProteina } from './terreno'
+import { fatiasComplemento, fatiasProteina } from './terreno'
 
 // Perfil do bowl (raio, altura), girado em torno do eixo vertical.
 // Começa no centro do fundo, sobe por fora, contorna a borda e desce por dentro.
@@ -52,6 +52,9 @@ export default function Bowl3D({ pedido }: { pedido: Pedido }) {
       {base && <Base3D key={base} tipo={base} />}
       {pedido.proteina?.map((id, i) => (
         <Porcao3D key={id} receita={receitas[id]} fatia={fatiasProteina[i]} temBase={!!base} />
+      ))}
+      {pedido.complementos?.map((id, i) => (
+        <Porcao3D key={id} receita={receitas[id]} fatia={fatiasComplemento[i]} temBase={!!base} />
       ))}
 
       <ContactShadows position={[0, -0.75, 0]} opacity={0.5} scale={6} blur={2.4} far={2} />
