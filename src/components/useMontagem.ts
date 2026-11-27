@@ -17,9 +17,11 @@ export function useMontagem(selecao: Selecao, intervalo = 750, inicio = 600) {
 
   useEffect(() => {
     if (feitos >= passos.length) return
-    const espera = setTimeout(() => setFeitos(feitos + 1), feitos ? intervalo : inicio)
+    // Depois do molho, espera a bisnaga terminar antes do próximo ingrediente.
+    const pausa = passos[feitos - 1]?.etapa === 'molho' ? 3200 : intervalo
+    const espera = setTimeout(() => setFeitos(feitos + 1), feitos ? pausa : inicio)
     return () => clearTimeout(espera)
-  }, [feitos, passos.length, intervalo, inicio])
+  }, [feitos, passos, intervalo, inicio])
 
   const parcial = useMemo(() => {
     const resultado: Selecao = {}
