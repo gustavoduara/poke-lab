@@ -1,5 +1,5 @@
-import { CanvasTexture, SRGBColorSpace, Vector3 } from 'three'
-import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
+import { CanvasTexture, SRGBColorSpace } from 'three'
+import { criarCuboIrregular } from './formas'
 import { criarSorteio } from './terreno'
 
 const LADO = 256
@@ -56,25 +56,5 @@ function desenharTextura() {
   return textura
 }
 
-// Cubo levemente torto, para não parecer um dado de plástico.
-function criarCubo() {
-  const forma = new RoundedBoxGeometry(1, 1, 1, 4, 0.16)
-  const posicoes = forma.attributes.position
-  const ponto = new Vector3()
-  for (let i = 0; i < posicoes.count; i++) {
-    ponto.fromBufferAttribute(posicoes, i)
-    // A deformação depende só da posição, então as faces continuam unidas.
-    const onda = Math.sin(ponto.y * 5 + ponto.z * 3) * 0.045
-    posicoes.setXYZ(
-      i,
-      ponto.x * (1 + ponto.y * 0.12) + onda,
-      ponto.y + Math.sin(ponto.x * 4 - ponto.z * 5) * 0.035,
-      ponto.z * (1 - ponto.x * 0.1) + onda * 0.6,
-    )
-  }
-  forma.computeVertexNormals()
-  return forma
-}
-
 export const texturaSalmao = desenharTextura()
-export const cuboSalmao = criarCubo()
+export const cuboSalmao = criarCuboIrregular(0.16, 0.045)

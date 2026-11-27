@@ -6,6 +6,15 @@ import {
   TorusGeometry,
 } from 'three'
 import { cuboSalmao, texturaSalmao } from './salmao'
+import {
+  caudasCamarao,
+  corpoCamarao,
+  cuboAtum,
+  cuboTofu,
+  texturaAtum,
+  texturaCamarao,
+  texturaTofu,
+} from './proteinas'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
 type Trio = [number, number, number]
@@ -36,7 +45,6 @@ const disco = new CylinderGeometry(1, 1, 1, 28)
 const arco = (abertura: number, espessura: number) =>
   new TorusGeometry(1, espessura, 10, 28, abertura).rotateX(Math.PI / 2).center()
 
-const camarao = arco(Math.PI * 1.4, 0.38)
 const fatiaAbacate = arco(Math.PI * 0.75, 0.24)
 const tiraRepolho = arco(Math.PI * 0.8, 0.09)
 
@@ -58,27 +66,54 @@ export const receitas: Record<string, Receita> = {
     ],
   },
   atum: {
-    quantidade: 13,
-    altura: 0.1,
+    quantidade: 12,
+    altura: 0.11,
     inclinacao: 0.5,
     camadas: [
-      { forma: cubo, cores: ['#b3344a', '#9c2a40', '#c23f54'], escala: [0.24, 0.2, 0.23], brilho: 0.3 },
+      {
+        forma: cuboAtum,
+        cores: ['#ffffff', '#ecd9d9', '#fff0f0'],
+        escala: [0.25, 0.2, 0.24],
+        brilho: 0.4,
+        textura: texturaAtum,
+        molhado: true,
+      },
     ],
   },
   camarao: {
-    quantidade: 9,
-    altura: 0.08,
-    inclinacao: 0.4,
+    quantidade: 7,
+    altura: 0.11,
+    inclinacao: 0.45,
     camadas: [
-      { forma: camarao, cores: ['#f6a98b', '#f4936f', '#f9bba0'], escala: [0.14, 0.15, 0.14], brilho: 0.4 },
+      {
+        forma: corpoCamarao,
+        cores: ['#ffffff', '#fff1e8', '#ffe8dc'],
+        escala: [0.18, 0.18, 0.18],
+        brilho: 0.4,
+        textura: texturaCamarao,
+        molhado: true,
+      },
+      ...caudasCamarao.map((forma) => ({
+        forma,
+        cores: ['#f26b2a', '#e85d1f'],
+        escala: [0.18, 0.18, 0.18] as Trio,
+        brilho: 0.4,
+        molhado: true,
+      })),
     ],
   },
   tofu: {
-    quantidade: 13,
-    altura: 0.09,
+    quantidade: 12,
+    altura: 0.1,
     inclinacao: 0.4,
     camadas: [
-      { forma: cubo, cores: ['#efe3b8', '#f4ebc9', '#e6d6a2'], escala: [0.22, 0.18, 0.22], brilho: 0.8 },
+      {
+        forma: cuboTofu,
+        cores: ['#ffffff', '#f6f1e2', '#fffaea'],
+        escala: [0.24, 0.19, 0.24],
+        brilho: 0.85,
+        textura: texturaTofu,
+      },
     ],
   },
   manga: {
