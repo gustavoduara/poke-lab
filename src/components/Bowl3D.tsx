@@ -24,6 +24,8 @@ const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matche
 
 // Medidas da coluna quando o bowl está separado.
 const PASSO = 0.95
+const FOLGA_POTE = 0.45
+const INICIO = 1.45 // segundos reservados para o pote e a base saírem
 const TANGENTE = Math.tan((20 * Math.PI) / 180) // metade do campo de visão da câmera
 
 export type Pedido = Selecao
@@ -63,7 +65,7 @@ function Cena({ pedido, separado, fechado, aoClicar }: Props) {
     ...(molho ? [molho] : []),
     ...crocantes,
   ]
-  const alturaColuna = (ordem.length - 1) * PASSO + 1.7
+  const alturaColuna = (ordem.length - 1) * PASSO + 1.7 + FOLGA_POTE * 2
   const distancia = Math.max(
     (alturaColuna / (2 * TANGENTE)) * 1.16,
     // Em telas estreitas, afasta o bastante para caber na largura.
@@ -77,11 +79,18 @@ function Cena({ pedido, separado, fechado, aoClicar }: Props) {
   function destino(id: string, escala: number): Destino | undefined {
     if (!separado) return undefined
     const i = ordem.indexOf(id)
+    const ehPote = id === 'pote'
+    const ehBase = id === base
     return {
-      altura: (i - (ordem.length - 1) / 2) * PASSO,
+      // O pote desce um pouco além do seu lugar na coluna para não encostar na base.
+      altura: (i - (ordem.length - 1) / 2) * PASSO - (ehPote ? FOLGA_POTE : 0),
       escala,
-      // A de cima sai primeiro, depois uma de cada vez.
-      atraso: (ordem.length - 1 - i) * 0.45,
+      // Primeiro o pote desce, depois a base. Só então os ingredientes se
+      // organizam, um de cada vez, começando pelo de cima.
+      atraso: ehPote ? 0 : ehBase ? 0.75 : INICIO + (ordem.length - 1 - i) * 0.4,
+      // Na volta, os ingredientes se juntam antes e o pote chega por último.
+      atrasoVolta: ehPote ? 0.7 : ehBase ? 0.3 : 0,
+      salto: ehPote || ehBase ? 0 : 0.3,
       numero: ordem.length - i,
       nome: id === 'pote' ? 'Pote' : (nomes.get(id) ?? id),
       afastamento,

@@ -9,6 +9,8 @@ export type Destino = {
   altura: number // onde a camada para quando o bowl está separado
   escala: number
   atraso: number // segundos até começar a se mover
+  atrasoVolta: number // segundos de espera na hora de remontar
+  salto: number // altura do pulo durante o caminho
   numero: number
   nome: string
   afastamento: number // distância do nome até o centro, em pixels
@@ -25,7 +27,7 @@ export default function Camada3D({ centro, destino, children }: Props) {
   const movel = useRef<Group>(null)
   const interno = useRef<Group>(null)
   const rotulo = useRef<HTMLDivElement>(null)
-  const estado = useRef({ avanco: 0, espera: 0, giro: 0 })
+  const estado = useRef({ avanco: 0, espera: 0, giro: 0, voltando: true })
   // Guarda o último destino para a camada conseguir voltar suavemente.
   const ultimo = useRef(destino)
   if (destino) ultimo.current = destino
@@ -35,13 +37,24 @@ export default function Camada3D({ centro, destino, children }: Props) {
     const e = estado.current
 
     if (destino) {
+      if (e.voltando) {
+        e.voltando = false
+        e.espera = 0
+      }
       e.espera += dt
       if (semAnimacao) e.avanco = 1
       else if (e.espera >= destino.atraso) e.avanco = Math.min(1, e.avanco + dt / 0.8)
       if (!semAnimacao) e.giro += dt * 0.9 * e.avanco
     } else {
-      e.espera = 0
-      e.avanco = semAnimacao ? 0 : Math.max(0, e.avanco - dt / 0.6)
+      if (!e.voltando) {
+        e.voltando = true
+        e.espera = 0
+      }
+      e.espera += dt
+      if (semAnimacao) e.avanco = 0
+      else if (e.espera >= (ultimo.current?.atrasoVolta ?? 0)) {
+        e.avanco = Math.max(0, e.avanco - dt / 0.6)
+      }
       // Reduz o giro a menos de meia volta, para voltar pelo caminho mais curto.
       e.giro = MathUtils.euclideanModulo(e.giro + Math.PI, Math.PI * 2) - Math.PI
     }
@@ -51,11 +64,13 @@ export default function Camada3D({ centro, destino, children }: Props) {
     const [x, y, z] = centro
     movel.current?.position.set(
       MathUtils.lerp(x, 0, p),
-      // Um pequeno arco faz a camada "saltar" para fora do pote.
-      MathUtils.lerp(y, alvo?.altura ?? y, p) + Math.sin(p * Math.PI) * 0.35,
+      // Um pequeno arco faz o ingrediente "saltar" até o lugar.
+      MathUtils.lerp(y, alvo?.altura ?? y, p) + Math.sin(p * Math.PI) * (alvo?.salto ?? 0),
       MathUtils.lerp(z, 0, p),
     )
-    movel.current?.scale.setScalar(MathUtils.lerp(1, alvo?.escala ?? 1, p))
+    // O tamanho só muda na segunda metade, quando a camada já se afastou das outras.
+    const tamanho = MathUtils.smootherstep(e.avanco, 0.5, 1)
+    movel.current?.scale.setScalar(MathUtils.lerp(1, alvo?.escala ?? 1, tamanho))
     if (movel.current) movel.current.rotation.y = e.giro * p
     interno.current?.position.set(-x, -y, -z)
 

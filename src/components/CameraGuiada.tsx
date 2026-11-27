@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { PerspectiveCamera, Vector3 } from 'three'
+import { MathUtils, PerspectiveCamera, Spherical, Vector3 } from 'three'
 
 export const POSICAO_INICIAL: [number, number, number] = [0, 3.7, 5.3]
 
@@ -13,16 +13,17 @@ type Props = {
 export default function CameraGuiada({ distancia, cancelada }: Props) {
   const camera = useThree((estado) => estado.camera)
   const { width, height } = useThree((estado) => estado.size)
-  const alvo = useRef<Vector3 | null>(null)
+  const alvo = useRef<Spherical | null>(null)
   const anterior = useRef(distancia)
 
   useEffect(() => {
     if (anterior.current === distancia) return
     anterior.current = distancia
-    alvo.current =
+    const destino =
       distancia === null
         ? new Vector3(...POSICAO_INICIAL)
         : new Vector3(0, 0.26, 0.966).multiplyScalar(distancia)
+    alvo.current = new Spherical().setFromVector3(destino)
   }, [distancia])
 
   useEffect(() => {
@@ -38,10 +39,20 @@ export default function CameraGuiada({ distancia, cancelada }: Props) {
   }, [camera, deslocar, width, height])
 
   useFrame((_, delta) => {
-    if (!alvo.current) return
-    camera.position.lerp(alvo.current, 1 - Math.exp(-4 * Math.min(delta, 1 / 20)))
+    const destino = alvo.current
+    if (!destino) return
+    // A câmera contorna o bowl (distância e ângulos), sem nunca passar por dentro dele.
+    const parte = 1 - Math.exp(-4 * Math.min(delta, 1 / 20))
+    const atual = new Spherical().setFromVector3(camera.position)
+    const volta = MathUtils.euclideanModulo(destino.theta - atual.theta + Math.PI, Math.PI * 2)
+    atual.theta += (volta - Math.PI) * parte
+    atual.phi += (destino.phi - atual.phi) * parte
+    atual.radius += (destino.radius - atual.radius) * parte
+    camera.position.setFromSpherical(atual)
     camera.lookAt(0, 0, 0)
-    if (camera.position.distanceTo(alvo.current) < 0.02) alvo.current = null
+
+    const falta = camera.position.distanceTo(new Vector3().setFromSpherical(destino))
+    if (falta < 0.02) alvo.current = null
   })
 
   return null
