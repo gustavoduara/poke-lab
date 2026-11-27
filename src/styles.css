@@ -1483,3 +1483,18 @@ input[type='radio'] {
     width: 100%;
   }
 }
+
+/* os dois botões do montador: finalizar ou continuar pedindo */
+.botoes-pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(320px, 100%);
+  margin: 0 auto 8px;
+}
+
+@media (max-width: 760px) {
+  .montador .botoes-pedido {
+    align-self: center;
+  }
+}

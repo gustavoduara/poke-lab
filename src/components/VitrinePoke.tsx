@@ -108,11 +108,11 @@ export default function VitrinePoke({
           {pedido === 'pronto' ? (
             <div className="vitrine-acoes" role="status">
               <p>Adicionado ao carrinho!</p>
-              <Link to="/carrinho" className="botao">
-                Ver carrinho
+              <Link to="/finalizar" className="botao">
+                Finalizar pedido
               </Link>
               <button type="button" className="botao secundario" onClick={aoFechar}>
-                Continuar olhando
+                Continuar pedindo
               </button>
             </div>
           ) : (

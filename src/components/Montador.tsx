@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { etapas, type Etapa } from '../data/cardapio'
 import { ingredientesDe, podeAdicionar, precoDoBowl } from '../data/pedido'
 import { useCarrinho } from '../estado/carrinho'
@@ -9,18 +9,23 @@ import { moeda } from '../data/moeda'
 export default function Montador() {
   const { selecao, setSelecao, adicionar } = useCarrinho()
   const [adicionado, setAdicionado] = useState(false)
-  const [fechando, setFechando] = useState(false)
+  // Enquanto a tampa fecha, guarda o que fazer depois.
+  const [fechando, setFechando] = useState<'continuar' | 'finalizar' | null>(null)
+  const navegar = useNavigate()
 
   // Dá tempo de ver a tampa fechar e depois libera um pote novo.
   // A limpeza também roda se a pessoa trocar de página no meio.
   useEffect(() => {
     if (!fechando) return
-    const espera = setTimeout(() => setFechando(false), 2600)
+    const espera = setTimeout(() => {
+      if (fechando === 'finalizar') navegar('/finalizar')
+      setFechando(null)
+    }, 2600)
     return () => {
       clearTimeout(espera)
       setSelecao({})
     }
-  }, [fechando, setSelecao])
+  }, [fechando, navegar, setSelecao])
 
   function alternar(etapa: Etapa, id: string) {
     setAdicionado(false)
@@ -39,10 +44,10 @@ export default function Montador() {
   const total = precoDoBowl(selecao)
   const completo = podeAdicionar(selecao)
 
-  function adicionarAoCarrinho() {
+  function adicionarAoCarrinho(depois: 'continuar' | 'finalizar') {
     adicionar(selecao)
-    setFechando(true)
-    setAdicionado(true)
+    setFechando(depois)
+    setAdicionado(depois === 'continuar')
   }
 
   return (
@@ -60,7 +65,7 @@ export default function Montador() {
                 {etapa.opcoes.map((opcao) => {
                   const ativo = marcados.includes(opcao.id)
                   const bloqueado =
-                    fechando ||
+                    !!fechando ||
                     (!ativo && etapa.maximo > 1 && marcados.length >= etapa.maximo)
                   return (
                     <button
@@ -86,7 +91,7 @@ export default function Montador() {
       <aside className="resumo">
         <PreviaBowl
           pedido={selecao}
-          fechado={fechando}
+          fechado={!!fechando}
           descricao={
             escolhidos.length
               ? `Bowl em 3D com ${escolhidos.map((item) => item.nome).join(', ')}`
@@ -101,16 +106,28 @@ export default function Montador() {
         <p className="total">
           Total <strong>{moeda(total)}</strong>
         </p>
-        <button
-          type="button"
-          className="botao"
-          disabled={!completo || fechando}
-          onClick={adicionarAoCarrinho}
-        >
-          Adicionar ao carrinho
-        </button>
+        <div className="botoes-pedido">
+          <button
+            type="button"
+            className="botao"
+            disabled={!completo || !!fechando}
+            onClick={() => adicionarAoCarrinho('finalizar')}
+          >
+            Adicionar e finalizar
+          </button>
+          <button
+            type="button"
+            className="botao secundario"
+            disabled={!completo || !!fechando}
+            onClick={() => adicionarAoCarrinho('continuar')}
+          >
+            Adicionar e continuar pedindo
+          </button>
+        </div>
         <p className="dica" role="status">
-          {adicionado ? (
+          {fechando === 'finalizar' ? (
+            'Fechando seu poke e abrindo a finalização...'
+          ) : adicionado ? (
             <>
               Poke adicionado! <Link to="/carrinho">Ver carrinho</Link>
             </>
