@@ -4,6 +4,7 @@ import {
   itemValido,
   type ItemCarrinho,
   type PedidoConfirmado,
+  type Recebimento,
   type Selecao,
 } from '../data/pedido'
 import { CarrinhoContext } from './carrinho'
@@ -23,6 +24,7 @@ function carregar(): ItemCarrinho[] {
 export default function CarrinhoProvider({ children }: { children: ReactNode }) {
   const [selecao, setSelecao] = useState<Selecao>({})
   const [itens, setItens] = useState<ItemCarrinho[]>(carregar)
+  const [recebimento, setRecebimento] = useState<Recebimento>('entrega')
   const [confirmado, setConfirmado] = useState<PedidoConfirmado | null>(null)
 
   useEffect(() => {
@@ -61,6 +63,8 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
         selecao,
         setSelecao,
         itens,
+        recebimento,
+        setRecebimento,
         adicionar,
         mudarQuantidade,
         remover,

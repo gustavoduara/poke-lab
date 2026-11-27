@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router'
 import { moeda } from '../data/moeda'
-import { TAXA_ENTREGA, totalDoCarrinho, type Pagamento, type Recebimento } from '../data/pedido'
+import { TAXA_ENTREGA, totalDoCarrinho, type Pagamento } from '../data/pedido'
 import { useCarrinho } from '../estado/carrinho'
 
 const pagamentos: { id: Pagamento; nome: string }[] = [
@@ -11,8 +11,7 @@ const pagamentos: { id: Pagamento; nome: string }[] = [
 ]
 
 export default function Finalizar() {
-  const { itens, confirmado, concluir } = useCarrinho()
-  const [recebimento, setRecebimento] = useState<Recebimento>('entrega')
+  const { itens, confirmado, concluir, recebimento, setRecebimento } = useCarrinho()
   const [pagamento, setPagamento] = useState<Pagamento>('pix')
   const [erro, setErro] = useState('')
 
