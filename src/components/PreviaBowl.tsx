@@ -19,7 +19,9 @@ export default function PreviaBowl({ pedido, descricao, fechado }: Props) {
   useEffect(() => {
     if (!separado) return
     const fechar = (evento: KeyboardEvent) => {
-      if (evento.key === 'Escape') setPedidoSeparar(false)
+      if (evento.key !== 'Escape') return
+      evento.preventDefault()
+      setPedidoSeparar(false)
     }
     const rolagem = document.body.style.overflow
     document.body.style.overflow = 'hidden'

@@ -656,3 +656,406 @@ input[type='radio'] {
     display: none;
   }
 }
+
+/* ===== página inicial ===== */
+.suave {
+  color: var(--suave);
+  line-height: 1.6;
+}
+
+.abertura {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  max-width: 1100px;
+  min-height: min(620px, calc(100vh - 80px));
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.abertura h1 {
+  margin: 8px 0 16px;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.08;
+}
+
+.abertura h1 em {
+  color: var(--destaque);
+  font-style: normal;
+}
+
+.abertura .marca {
+  margin: 0;
+  color: var(--destaque);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.abertura .acoes {
+  justify-content: flex-start;
+}
+
+.numeros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 36px;
+  margin: 36px 0 0;
+}
+
+.numeros div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.numeros dt {
+  color: var(--suave);
+  font-size: 0.85rem;
+}
+
+.numeros dd {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.abertura-bowl {
+  width: min(520px, 100%);
+  aspect-ratio: 1;
+  justify-self: center;
+}
+
+.bowl.apresentacao {
+  width: 100%;
+  height: 100%;
+}
+
+#prontos {
+  scroll-margin-top: 12px;
+}
+
+.titulo-secao {
+  margin-bottom: 4px;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+}
+
+.vitrines {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao-poke {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  border: 2px solid transparent;
+  border-radius: 24px;
+  background: var(--painel);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+}
+
+.cartao-poke:hover,
+.cartao-poke:focus-visible {
+  border-color: var(--destaque);
+  transform: translateY(-4px);
+}
+
+.cartao-poke strong {
+  font-size: 1.3rem;
+}
+
+.rodape-cartao {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.rodape-cartao > span {
+  color: var(--destaque);
+  font-weight: 700;
+}
+
+.etiqueta {
+  margin: 0;
+  padding: 3px 10px;
+  border: 1px solid var(--destaque);
+  border-radius: 999px;
+  color: var(--destaque);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.miniatura {
+  align-self: center;
+  width: 170px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  margin-bottom: 8px;
+  transition: transform 0.6s;
+}
+
+.cartao-poke:hover .miniatura {
+  transform: rotate(25deg) scale(1.04);
+}
+
+/* em telas largas, o cartão de montar do zero completa a segunda linha */
+@media (min-width: 860px) {
+  .vitrines {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .vitrines .do-zero {
+    grid-column: span 2;
+  }
+}
+
+.do-zero .cartao-poke {
+  border: 2px dashed var(--destaque);
+  background: transparent;
+}
+
+.mais {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 150px;
+  aspect-ratio: 1;
+  margin-bottom: 8px;
+  border: 3px dashed #40585c;
+  border-radius: 50%;
+  color: var(--destaque);
+  font-size: 4rem;
+}
+
+.chamada {
+  max-width: 1068px;
+  margin: 32px auto 0;
+  padding: 40px 16px;
+  border-radius: 24px;
+  background: var(--painel);
+  text-align: center;
+}
+
+.chamada h2 {
+  margin: 0;
+}
+
+/* ===== janela do poke pronto ===== */
+.vitrine {
+  width: min(940px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  overflow: auto;
+  border: 1px solid #2b454a;
+  border-radius: 24px;
+  background: #132326;
+  color: var(--texto);
+}
+
+.vitrine::backdrop {
+  background: rgba(5, 12, 13, 0.75);
+}
+
+.fechar {
+  position: sticky;
+  top: 10px;
+  z-index: 20;
+  float: right;
+  width: 40px;
+  height: 40px;
+  margin: 10px 10px -50px 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--painel);
+  color: var(--texto);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.vitrine-corpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.vitrine-palco {
+  text-align: center;
+}
+
+.vitrine .palco {
+  width: min(430px, 100%);
+}
+
+.vitrine-texto h2 {
+  margin: 10px 0 4px;
+  font-size: 1.8rem;
+}
+
+.vitrine-texto .etiqueta {
+  display: inline-block;
+}
+
+.progresso {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #29434a;
+}
+
+.progresso span {
+  display: block;
+  height: 100%;
+  background: var(--destaque);
+  transition: width 0.4s;
+}
+
+.receita {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.receita li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--painel);
+  font-size: 0.85rem;
+  opacity: 0.35;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.receita li.colocado {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.preco {
+  margin: 12px 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.vitrine-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.vitrine-acoes p {
+  width: 100%;
+  margin: 0;
+  font-weight: 700;
+}
+
+.vitrine-acoes .remover:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (max-width: 760px) {
+  .abertura {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    min-height: 0;
+    padding-top: 12px;
+    text-align: center;
+  }
+
+  .abertura .acoes,
+  .numeros {
+    justify-content: center;
+  }
+
+  .numeros {
+    gap: 12px 24px;
+    margin-top: 24px;
+  }
+
+  .numeros dd {
+    font-size: 1.25rem;
+  }
+
+  .abertura-bowl {
+    order: -1;
+    width: min(340px, 100%);
+    aspect-ratio: 5 / 4;
+  }
+
+  .miniatura {
+    width: 150px;
+  }
+
+  .mais {
+    width: 110px;
+  }
+
+  .vitrine-corpo {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 12px;
+  }
+
+  .vitrine .palco {
+    width: min(300px, 100%);
+  }
+
+  .vitrine .dica,
+  .vitrine .separar {
+    margin-block: 4px;
+  }
+
+  .vitrine-texto {
+    text-align: center;
+  }
+
+  .receita,
+  .vitrine-acoes {
+    justify-content: center;
+  }
+}
+
+/* a vista separada precisa ocupar a tela, mesmo aberta de dentro da janela */
+.vitrine:has(.bowl.separado) {
+  overflow: visible;
+}
+
+.vitrine:has(.bowl.separado) .fechar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-poke,
+  .miniatura,
+  .receita li,
+  .progresso span {
+    transition: none;
+  }
+}
