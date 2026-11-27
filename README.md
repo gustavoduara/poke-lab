@@ -8,6 +8,7 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [x] Cardápio com limite por etapa e cálculo do preço
 - [x] Bowl em 3D que gira (arraste para ver de outros ângulos)
 - [x] Bases em 3D: arroz gohan, arroz integral e mix de folhas
+- [x] Proteínas em 3D: salmão, atum, camarão e tofu
 - [ ] Demais ingredientes em 3D dentro do bowl
 - [ ] Animação de entrada dos ingredientes
 - [ ] Modelos 3D detalhados

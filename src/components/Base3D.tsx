@@ -1,31 +1,18 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, DoubleSide, InstancedMesh, Object3D, Vector2 } from 'three'
+import { RAIO_BASE, alturaBase, criarSorteio } from './terreno'
 
 export type TipoBase = 'gohan' | 'integral' | 'folhas'
 
-const RAIO = 1.5
-
-// Altura do monte da base conforme a distância do centro do bowl.
-const altura = (raio: number) => 0.15 + 0.25 * (1 - (raio / RAIO) ** 2)
-
 const perfilMonte = Array.from({ length: 17 }, (_, i) => {
-  const raio = (RAIO * i) / 16
-  return new Vector2(raio, altura(raio))
+  const raio = (RAIO_BASE * i) / 16
+  return new Vector2(raio, alturaBase(raio))
 })
 
 const estilos = {
   gohan: { fundo: '#e6dfcc', cores: ['#fffdf4', '#f4efe2', '#ebe4d0'] },
   integral: { fundo: '#a98658', cores: ['#d8b988', '#c9a876', '#b08a57'] },
   folhas: { fundo: '#3f6b2f', cores: ['#8cc152', '#6fa84f', '#4f8a38', '#a8cf6a'] },
-}
-
-// Sorteio com semente: o bowl fica igual a cada vez que a base é escolhida.
-function criarSorteio(semente: number) {
-  let estado = semente
-  return () => {
-    estado = (estado * 16807) % 2147483647
-    return estado / 2147483647
-  }
 }
 
 export default function Base3D({ tipo }: { tipo: TipoBase }) {
@@ -39,12 +26,12 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
     const sortear = criarSorteio(42)
     return Array.from({ length: quantidade }, (_, i) => {
       // A raiz quadrada espalha os itens por igual no círculo.
-      const raio = Math.sqrt(sortear()) * (RAIO - (ehFolha ? 0.2 : 0.06))
+      const raio = Math.sqrt(sortear()) * (RAIO_BASE - (ehFolha ? 0.2 : 0.06))
       const angulo = sortear() * Math.PI * 2
       const objeto = new Object3D()
       objeto.position.set(
         Math.cos(angulo) * raio,
-        altura(raio) + sortear() * (ehFolha ? 0.16 : 0.05),
+        alturaBase(raio) + sortear() * (ehFolha ? 0.16 : 0.05),
         Math.sin(angulo) * raio,
       )
       const inclinacao = ehFolha ? 0.9 : 0.5

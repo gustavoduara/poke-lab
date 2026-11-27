@@ -62,7 +62,14 @@ export default function Montador() {
       </div>
 
       <aside className="resumo">
-        <PreviaBowl base={escolhidos.find((item) => item.id === selecao.base?.[0])} />
+        <PreviaBowl
+          pedido={selecao}
+          descricao={
+            escolhidos.length
+              ? `Bowl em 3D com ${escolhidos.map((item) => item.nome).join(', ')}`
+              : 'Bowl em 3D vazio'
+          }
+        />
         <ul>
           {escolhidos.map((item) => (
             <li key={item.id}>{item.nome}</li>
