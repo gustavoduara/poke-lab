@@ -21,35 +21,151 @@ body {
   margin: 0;
 }
 
-.topo {
-  text-align: center;
-  padding: 64px 16px 40px;
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
-.topo h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  margin: 8px 0;
+.logo {
+  color: var(--destaque);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
 }
 
-.topo p {
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+nav a {
+  padding: 8px 12px;
+  border-radius: 999px;
   color: var(--suave);
+  text-decoration: none;
 }
 
-.topo .marca {
+nav a:hover,
+nav a.active {
+  background: var(--painel);
+  color: var(--texto);
+}
+
+.destaque {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 72px 16px 48px;
+  text-align: center;
+}
+
+.destaque h1 {
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1.1;
+  margin: 12px 0;
+}
+
+.destaque p,
+.intro,
+.cartao p,
+.texto p {
+  color: var(--suave);
+  line-height: 1.6;
+}
+
+.destaque .marca {
   color: var(--destaque);
   text-transform: uppercase;
   letter-spacing: 0.2em;
 }
 
-.topo a {
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.botao {
   display: inline-block;
-  margin-top: 12px;
   padding: 12px 28px;
+  border: 2px solid var(--destaque);
   border-radius: 999px;
   background: var(--destaque);
   color: var(--fundo);
+  font: inherit;
   font-weight: 700;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.botao.secundario {
+  background: transparent;
+  color: var(--texto);
+}
+
+.botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.conteudo {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.conteudo.texto {
+  max-width: 700px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao {
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--painel);
+}
+
+.cartao h2 {
+  margin: 0;
+}
+
+.numero {
+  color: var(--destaque);
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.itens {
+  padding: 0;
+  list-style: none;
+}
+
+.itens li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.valor {
+  margin-left: auto;
+  color: var(--suave);
 }
 
 .montador {
@@ -110,6 +226,11 @@ small {
   width: 14px;
   height: 14px;
   border-radius: 50%;
+}
+
+.montador h1 {
+  grid-column: 1 / -1;
+  margin: 0;
 }
 
 .resumo {

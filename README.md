@@ -14,7 +14,9 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [x] Crocantes em 3D: gergelim, nori e couve crispy
 - [x] Animação: ingredientes caindo no bowl e molho sendo despejado
 - [ ] Modelos 3D detalhados
-- [ ] Páginas do restaurante e finalização do pedido
+- [x] Páginas do restaurante: início, cardápio, montador e sobre
+- [ ] Carrinho
+- [ ] Finalização do pedido
 
 Os preços e o cardápio são fictícios.
 

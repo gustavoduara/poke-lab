@@ -1,18 +1,23 @@
+import { HashRouter, Navigate, Route, Routes } from 'react-router'
+import Layout from './components/Layout'
 import Montador from './components/Montador'
+import Cardapio from './pages/Cardapio'
+import Inicio from './pages/Inicio'
+import Sobre from './pages/Sobre'
 
+// O HashRouter funciona em hospedagens estáticas, como o GitHub Pages.
 export default function App() {
   return (
-    <>
-      <header className="topo">
-        <p className="marca">Poke Lab</p>
-        <h1>Monte seu poke do seu jeito</h1>
-        <p>Escolha cada ingrediente e veja seu bowl ganhar forma.</p>
-        <a href="#montar">Começar</a>
-      </header>
-      <main>
-        <Montador />
-      </main>
-      <footer>Poke Lab · projeto de portfólio</footer>
-    </>
+    <HashRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Inicio />} />
+          <Route path="cardapio" element={<Cardapio />} />
+          <Route path="montar" element={<Montador />} />
+          <Route path="sobre" element={<Sobre />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </HashRouter>
   )
 }

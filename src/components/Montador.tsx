@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { etapas, precoBase, type Etapa } from '../data/cardapio'
 import PreviaBowl from './PreviaBowl'
-
-const moeda = (valor: number) =>
-  valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+import { moeda } from '../data/moeda'
 
 export default function Montador() {
   const [selecao, setSelecao] = useState<Record<string, string[]>>({})
@@ -26,7 +24,8 @@ export default function Montador() {
   const total = escolhidos.reduce((soma, item) => soma + item.preco, precoBase)
 
   return (
-    <section className="montador" id="montar">
+    <section className="montador">
+      <h1>Monte seu poke</h1>
       <div className="etapas">
         {etapas.map((etapa) => {
           const marcados = selecao[etapa.id] ?? []
