@@ -2,12 +2,14 @@ import { useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, InstancedMesh, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
 import type { Camada, Receita } from './receitas'
 import { useQueda } from './animacao'
+import { useNivel } from '../qualidade'
 import { apoio, centroFatia, criarSorteio } from './terreno'
 
 type Props = { receita: Receita; fatia: number; temBase: boolean }
 
 function CamadaRepetida({ camada, pecas }: { camada: Camada; pecas: Matrix4[] }) {
   const ref = useRef<InstancedMesh>(null)
+  const leve = useNivel() === 'leve'
 
   const matrizes = useMemo(() => {
     const local = new Matrix4().compose(
@@ -39,7 +41,7 @@ function CamadaRepetida({ camada, pecas }: { camada: Camada; pecas: Matrix4[] })
       <meshPhysicalMaterial
         roughness={camada.brilho ?? 0.6}
         map={camada.textura ?? null}
-        clearcoat={camada.molhado ? 0.7 : 0}
+        clearcoat={camada.molhado && !leve ? 0.7 : 0}
         clearcoatRoughness={0.25}
         // A própria textura serve de relevo: os veios saltam um pouco.
         bumpMap={camada.textura ?? null}

@@ -1,10 +1,13 @@
 import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
 import Menu from './Menu'
+import { SemQuebrar } from './Protegido3D'
+import { escolherNivel, useNivel } from '../qualidade'
 import logo from '../assets/logo-simbolo.png'
 
 export default function Layout() {
   const { pathname } = useLocation()
+  const nivel = useNivel()
 
   // Ao trocar de página, volta para o topo.
   useEffect(() => {
@@ -26,9 +29,31 @@ export default function Layout() {
         </header>
       )}
       <main>
-        <Outlet />
+        <SemQuebrar
+          key={pathname}
+          reserva={
+            <section className="conteudo texto centro">
+              <h1>Algo deu errado nesta página</h1>
+              <button type="button" className="botao" onClick={() => window.location.reload()}>
+                Recarregar
+              </button>
+            </section>
+          }
+        >
+          <Outlet />
+        </SemQuebrar>
       </main>
-      <footer>Poke Lab é um restaurante fictício, criado como projeto de portfólio.</footer>
+      <footer>
+        <p>Poke Lab é um restaurante fictício, criado como projeto de portfólio.</p>
+        <button
+          type="button"
+          className="modo-leve"
+          aria-pressed={nivel === 'leve'}
+          onClick={() => escolherNivel(nivel === 'leve' ? 'alta' : 'leve')}
+        >
+          Modo leve do 3D: <strong>{nivel === 'leve' ? 'ligado' : 'desligado'}</strong>
+        </button>
+      </footer>
     </>
   )
 }

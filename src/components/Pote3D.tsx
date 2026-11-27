@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { BackSide, FrontSide, LatheGeometry, Vector2 } from 'three'
 import { criarPlastico } from './plastico'
+import { useNivel } from '../qualidade'
 
 // Perfil do pote [raio, altura], girado em torno do eixo vertical: centro levemente
 // elevado, anel de apoio, parede curva, um degrau e a aba da borda.
@@ -21,6 +22,7 @@ const frisos: [number, number, number][] = [
 ]
 
 export default function Pote3D() {
+  const leve = useNivel() === 'leve'
   const { parede, fundo, frente, friso } = useMemo(
     () => ({
       parede: new LatheGeometry(perfil, 128),
@@ -34,7 +36,7 @@ export default function Pote3D() {
 
   return (
     <group>
-      <mesh geometry={parede} material={fundo} renderOrder={1} />
+      {!leve && <mesh geometry={parede} material={fundo} renderOrder={1} />}
       <mesh geometry={parede} material={frente} renderOrder={2} />
       {frisos.map(([raio, altura, grossura]) => (
         <mesh

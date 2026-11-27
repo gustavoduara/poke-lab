@@ -3,6 +3,7 @@ import { criarTextura, pintarFundo } from './formas'
 
 // Grão de arroz: uma esfera que depois é alongada.
 export const grao = new SphereGeometry(1, 8, 6)
+export const graoLeve = new SphereGeometry(1, 5, 4)
 
 // Folha com a borda ondulada e o meio levemente curvado.
 function criarFolha() {

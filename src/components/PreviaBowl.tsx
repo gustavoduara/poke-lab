@@ -1,5 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import type { Pedido } from './Bowl3D'
+import Miniatura from './Miniatura'
+import Protegido3D from './Protegido3D'
+import { suporta3D } from '../qualidade'
 
 // O 3D é carregado à parte para o restante da página abrir antes.
 const Bowl3D = lazy(() => import('./Bowl3D'))
@@ -9,7 +12,8 @@ type Props = { pedido: Pedido; descricao: string; fechado: boolean }
 export default function PreviaBowl({ pedido, descricao, fechado }: Props) {
   const [pedidoSeparar, setPedidoSeparar] = useState(false)
   const temItens = Object.values(pedido).some((ids) => ids.length > 0)
-  const separado = pedidoSeparar && temItens && !fechado
+  const [semTresD, setSemTresD] = useState(!suporta3D())
+  const separado = pedidoSeparar && temItens && !fechado && !semTresD
 
   function alternar() {
     if (temItens && !fechado) setPedidoSeparar((atual) => !atual)
@@ -41,14 +45,16 @@ export default function PreviaBowl({ pedido, descricao, fechado }: Props) {
           role="group"
           aria-label={descricao}
         >
-          <Suspense fallback={<p>Carregando bowl...</p>}>
-            <Bowl3D
-              pedido={pedido}
-              separado={separado}
-              fechado={fechado}
-              aoClicar={alternar}
-            />
-          </Suspense>
+          <Protegido3D reserva={<Miniatura selecao={pedido} />} aoMudar={setSemTresD}>
+            <Suspense fallback={<p>Carregando bowl...</p>}>
+              <Bowl3D
+                pedido={pedido}
+                separado={separado}
+                fechado={fechado}
+                aoClicar={alternar}
+              />
+            </Suspense>
+          </Protegido3D>
           {separado && (
             <>
               <button type="button" className="botao juntar" onClick={alternar}>
@@ -59,15 +65,19 @@ export default function PreviaBowl({ pedido, descricao, fechado }: Props) {
           )}
         </div>
       </div>
-      <p className="dica">Arraste para girar · toque no pote para separar</p>
-      <button
-        type="button"
-        className="botao secundario separar"
-        disabled={!temItens || fechado}
-        onClick={alternar}
-      >
-        Ver ingredientes separados
-      </button>
+      {!semTresD && (
+        <>
+          <p className="dica">Arraste para girar · toque no pote para separar</p>
+          <button
+            type="button"
+            className="botao secundario separar"
+            disabled={!temItens || fechado}
+            onClick={alternar}
+          >
+            Ver ingredientes separados
+          </button>
+        </>
+      )}
     </>
   )
 }

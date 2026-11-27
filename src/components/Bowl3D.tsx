@@ -3,6 +3,10 @@ import { NeutralToneMapping } from 'three'
 import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
 import { ContactShadows, OrbitControls } from '@react-three/drei'
 import Luzes from './Luzes'
+import Desempenho from './Desempenho'
+import { useVigiarContexto } from './falha3d'
+import { useEconomia } from './useEconomia'
+import { useNivel } from '../qualidade'
 import Pote3D from './Pote3D'
 import Tampa3D from './Tampa3D'
 import Base3D, { type TipoBase } from './Base3D'
@@ -40,6 +44,7 @@ type Props = {
 }
 
 function Cena({ pedido, separado, fechado, aoClicar }: Props) {
+  const leve = useNivel() === 'leve'
   const { width, height } = useThree((estado) => estado.size)
   const [mexeu, setMexeu] = useState(false)
   const [arrastando, setArrastando] = useState(false)
@@ -159,7 +164,8 @@ function Cena({ pedido, separado, fechado, aoClicar }: Props) {
 
       {fechado && <Tampa3D />}
 
-      {!separado && (
+      {/* esta sombra no chão custa um desenho a mais por quadro */}
+      {!separado && !leve && (
         <ContactShadows position={[0, -0.59, 0]} opacity={0.3} scale={6} blur={2.4} far={2} />
       )}
 
@@ -187,15 +193,30 @@ function Cena({ pedido, separado, fechado, aoClicar }: Props) {
 }
 
 export default function Bowl3D(props: Props) {
+  const nivel = useNivel()
+  const leve = nivel === 'leve'
+  const vigiar = useVigiarContexto()
+  // Qualquer mudança no pedido ou na vista acorda o desenho.
+  const atividade = JSON.stringify([props.pedido, props.separado, props.fechado])
+  const { frameloop, observar } = useEconomia(nivel, atividade)
+
   return (
     <Canvas
-      shadows="percentage"
+      // ao trocar de modo, a cena é recriada com as novas opções
+      key={nivel}
+      frameloop={frameloop}
+      shadows={leve ? false : 'percentage'}
       camera={{ position: POSICAO_INICIAL, fov: 40 }}
-      dpr={[1, 2]}
+      dpr={leve ? [1, 1.25] : [1, 2]}
       // Mantém as cores dos alimentos mais fiéis, sem desbotar nos tons fortes.
       gl={{ toneMapping: NeutralToneMapping }}
+      onCreated={({ gl }) => {
+        vigiar(gl)
+        observar(gl.domElement)
+      }}
     >
       <Cena {...props} />
+      <Desempenho frameloop={frameloop} />
     </Canvas>
   )
 }

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Player } from '@remotion/player'
 import AnimacaoPedido from './AnimacaoPedido'
 import FotoDoPoke from './FotoDoPoke'
+import { SemQuebrar } from '../components/Protegido3D'
+import { suporta3D } from '../qualidade'
 import { DURACAO_EM_QUADROS, QUADROS_POR_SEGUNDO, resumirPedido } from './tipos'
 import embalagem from '../assets/embalagem.jpg'
 import { moeda } from '../data/moeda'
@@ -15,7 +17,7 @@ export default function ModalPedido({ pedido, aoFechar }: Props) {
   const janela = useRef<HTMLDialogElement>(null)
   const [caixaCarregada, setCaixaCarregada] = useState(false)
   // undefined: ainda fotografando. null: não deu, então usa o bowl da foto.
-  const [foto, setFoto] = useState<string | null | undefined>(undefined)
+  const [foto, setFoto] = useState<string | null | undefined>(suporta3D() ? undefined : null)
 
   const orderSummary = useMemo(() => resumirPedido(pedido), [pedido])
   const inputProps = useMemo(
@@ -52,7 +54,9 @@ export default function ModalPedido({ pedido, aoFechar }: Props) {
       onClose={aoFechar}
     >
       {foto === undefined && (
-        <FotoDoPoke selecao={pedido.itens.find(ehPoke)!.selecao} aoFotografar={fotografar} />
+        <SemQuebrar reserva={null} aoQuebrar={() => setFoto(null)}>
+          <FotoDoPoke selecao={pedido.itens.find(ehPoke)!.selecao} aoFotografar={fotografar} />
+        </SemQuebrar>
       )}
 
       <div className="tela-animacao">

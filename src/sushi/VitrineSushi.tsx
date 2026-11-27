@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router'
 import { moeda } from '../data/moeda'
 import { composicao, temMacarico, totalDePecas, type SushiProduto } from '../data/sushi'
 import { useCarrinho } from '../estado/carrinho'
+import Protegido3D from '../components/Protegido3D'
+import { suporta3D } from '../qualidade'
+import MiniaturaSushi from './MiniaturaSushi'
 
 // O 3D é carregado só quando alguém abre um sushi.
 const CenaSushi3D = lazy(() => import('./CenaSushi3D'))
@@ -16,7 +19,9 @@ export default function VitrineSushi({ sushi, aoFechar }: Props) {
   const [volta, setVolta] = useState(0) // muda para recriar a cena e ver de novo
   const [selado, setSelado] = useState(false)
   const [adicionado, setAdicionado] = useState(false)
-  const fogo = temMacarico(sushi)
+  const [semTresD, setSemTresD] = useState(!suporta3D())
+  // sem 3D não há maçarico para mostrar
+  const fogo = temMacarico(sushi) && !semTresD
 
   useEffect(() => {
     const elemento = janela.current
@@ -44,14 +49,20 @@ export default function VitrineSushi({ sushi, aoFechar }: Props) {
       <div className="vitrine-corpo vitrine-sushi">
         <div className="vitrine-palco">
           <div className="palco-sushi" role="img" aria-label={`${sushi.nome} em 3D: ${composicao(sushi)}`}>
-            <Suspense fallback={<p>Preparando o sushi...</p>}>
-              <CenaSushi3D key={volta} sushi={sushi} aoMacaricar={aoMacaricar} />
-            </Suspense>
+            <Protegido3D reserva={<MiniaturaSushi sushi={sushi} />} aoMudar={setSemTresD}>
+              <Suspense fallback={<p>Preparando o sushi...</p>}>
+                <CenaSushi3D key={volta} sushi={sushi} aoMacaricar={aoMacaricar} />
+              </Suspense>
+            </Protegido3D>
           </div>
-          <p className="dica">Arraste para girar</p>
-          <button type="button" className="botao secundario separar" onClick={repetir}>
-            {fogo ? 'Maçaricar de novo' : 'Montar de novo'}
-          </button>
+          {!semTresD && (
+            <>
+              <p className="dica">Arraste para girar</p>
+              <button type="button" className="botao secundario separar" onClick={repetir}>
+                {fogo ? 'Maçaricar de novo' : 'Montar de novo'}
+              </button>
+            </>
+          )}
         </div>
 
         <div className="vitrine-texto">

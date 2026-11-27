@@ -11,6 +11,10 @@ import {
 } from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import Luzes from '../components/Luzes'
+import Desempenho from '../components/Desempenho'
+import { useVigiarContexto } from '../components/falha3d'
+import { useEconomia } from '../components/useEconomia'
+import { useNivel } from '../qualidade'
 import { useAnimacao } from '../components/animacao'
 import type { SushiProduto } from '../data/sushi'
 import Macarico3D from './Macarico3D'
@@ -181,6 +185,10 @@ export default function CenaSushi3D({ sushi, aoMacaricar }: Props) {
   const marcas = useRef<(MeshStandardMaterial | null)[]>([])
   const [tostando, setTostando] = useState(alvos.length > 0 && !semAnimacao)
   const [mexeu, setMexeu] = useState(false)
+  const nivel = useNivel()
+  const leve = nivel === 'leve'
+  const vigiar = useVigiarContexto()
+  const { frameloop, observar } = useEconomia(nivel, tostando)
   const inicio = pecas.length * ENTRE_PECAS + QUEDA + 0.35
 
   const terminar = useCallback(() => {
@@ -190,11 +198,18 @@ export default function CenaSushi3D({ sushi, aoMacaricar }: Props) {
 
   return (
     <Canvas
-      shadows="percentage"
-      dpr={[1, 2]}
+      key={nivel}
+      frameloop={frameloop}
+      shadows={leve ? false : 'percentage'}
+      dpr={leve ? [1, 1.25] : [1, 2]}
       camera={{ fov: 34, position: [0, 5, 6] }}
       gl={{ toneMapping: NeutralToneMapping }}
+      onCreated={({ gl }) => {
+        vigiar(gl)
+        observar(gl.domElement)
+      }}
     >
+      <Desempenho frameloop={frameloop} />
       <Enquadrar largura={largura} profundidade={profundidade} />
       <Luzes sombras alcance={Math.max(largura, profundidade) / 2 + 0.6} />
       <Tabua largura={largura} profundidade={profundidade} />
@@ -221,7 +236,9 @@ export default function CenaSushi3D({ sushi, aoMacaricar }: Props) {
         <Roteiro alvos={alvos} marcas={marcas} inicio={inicio} aoTerminar={terminar} />
       )}
 
-      <ContactShadows position={[0, -0.16, 0]} opacity={0.45} scale={largura + 2} blur={2.2} far={1.5} />
+      {!leve && (
+        <ContactShadows position={[0, -0.16, 0]} opacity={0.45} scale={largura + 2} blur={2.2} far={1.5} />
+      )}
       <OrbitControls
         target={[0, 0.1, 0]}
         enableZoom={false}

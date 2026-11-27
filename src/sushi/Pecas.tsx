@@ -1,8 +1,9 @@
 import { useLayoutEffect, useMemo, useRef, type Ref } from 'react'
-import { DoubleSide, InstancedMesh, MeshStandardMaterial, SphereGeometry } from 'three'
+import { DoubleSide, InstancedMesh, MeshStandardMaterial, SphereGeometry, Vector3 } from 'three'
 import { cuboSalmao, texturaSalmao } from '../components/salmao'
 import { texturaAtum, texturaCamarao } from '../components/proteinas'
 import type { TipoPeca } from '../data/sushi'
+import { useNivel } from '../qualidade'
 import {
   blocoDeArroz,
   caudasDoNigiri,
@@ -19,9 +20,22 @@ import {
 } from './formas'
 
 const formaGrao = new SphereGeometry(1, 7, 5)
+const formaGraoLeve = new SphereGeometry(1, 5, 4)
+const AUMENTO = new Vector3(1.45, 1.3, 1.45)
 
-function Graos({ graos }: { graos: Grao[] }) {
+function Graos({ graos: todos }: { graos: Grao[] }) {
   const ref = useRef<InstancedMesh>(null)
+  const leve = useNivel() === 'leve'
+  // No modo leve ficam 2 de cada 5 grãos, um pouco maiores.
+  const graos = useMemo(
+    () =>
+      leve
+        ? todos
+            .filter((_, i) => i % 5 < 2)
+            .map((grao) => ({ ...grao, matriz: grao.matriz.clone().scale(AUMENTO) }))
+        : todos,
+    [todos, leve],
+  )
 
   useLayoutEffect(() => {
     const malha = ref.current
@@ -36,14 +50,21 @@ function Graos({ graos }: { graos: Grao[] }) {
   }, [graos])
 
   return (
-    <instancedMesh ref={ref} args={[formaGrao, undefined, graos.length]} dispose={null} castShadow receiveShadow>
-      <meshPhysicalMaterial roughness={0.45} clearcoat={0.35} />
+    <instancedMesh
+      ref={ref}
+      args={[leve ? formaGraoLeve : formaGrao, undefined, graos.length]}
+      dispose={null}
+      castShadow
+      receiveShadow
+    >
+      <meshPhysicalMaterial roughness={0.45} clearcoat={leve ? 0 : 0.35} />
     </instancedMesh>
   )
 }
 
 // Peixe com a textura da carne, relevo e um leve brilho interno.
 function Peixe({ textura, translucido = 0.08 }: { textura: typeof texturaSalmao; translucido?: number }) {
+  const leve = useNivel() === 'leve'
   return (
     <meshPhysicalMaterial
       map={textura}
@@ -53,7 +74,7 @@ function Peixe({ textura, translucido = 0.08 }: { textura: typeof texturaSalmao;
       emissiveMap={textura}
       emissiveIntensity={translucido}
       roughness={0.38}
-      clearcoat={0.75}
+      clearcoat={leve ? 0 : 0.75}
       clearcoatRoughness={0.22}
     />
   )

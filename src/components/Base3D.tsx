@@ -1,7 +1,8 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, DoubleSide, InstancedMesh, Mesh, Object3D, Vector2, Vector3 } from 'three'
 import { useAnimacao, useQueda } from './animacao'
-import { folha, grao, texturaFolha } from './bases'
+import { folha, grao, graoLeve, texturaFolha } from './bases'
+import { useNivel } from '../qualidade'
 import { RAIO_BASE, alturaBase, criarSorteio } from './terreno'
 
 export type TipoBase = 'gohan' | 'integral' | 'folhas'
@@ -47,8 +48,11 @@ const estilos = {
 export default function Base3D({ tipo }: { tipo: TipoBase }) {
   const ref = useRef<InstancedMesh>(null)
   const ehFolha = tipo === 'folhas'
-  const noTopo = ehFolha ? 120 : 2000
-  const naLateral = ehFolha ? 300 : 1700
+  const leve = useNivel() === 'leve'
+  // No modo leve há bem menos itens; eles ficam maiores para cobrir o mesmo espaço.
+  const noTopo = ehFolha ? (leve ? 85 : 120) : leve ? 850 : 2000
+  const naLateral = ehFolha ? (leve ? 140 : 300) : leve ? 550 : 1700
+  const reforco = leve ? (ehFolha ? 1.15 : 1.4) : 1
   const quantidade = noTopo + naLateral
   const { fundo, cores } = estilos[tipo]
 
@@ -76,6 +80,7 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
         const tamanho = 0.8 + sortear() * 0.4
         if (ehFolha) objeto.scale.setScalar(0.34 * tamanho)
         else objeto.scale.set(0.072 * tamanho, 0.026 * tamanho, 0.031 * tamanho)
+        objeto.scale.multiplyScalar(reforco)
         objeto.updateMatrix()
         return { matriz: objeto.matrix.clone(), cor: new Color(cores[i % cores.length]) }
       }
@@ -97,10 +102,11 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
       const tamanho = 0.8 + sortear() * 0.4
       if (ehFolha) objeto.scale.setScalar(0.48 * tamanho)
       else objeto.scale.set(0.072 * tamanho, 0.03 * tamanho, 0.031 * tamanho)
+      objeto.scale.multiplyScalar(reforco)
       objeto.updateMatrix()
       return { matriz: objeto.matrix.clone(), cor: new Color(cores[i % cores.length]) }
     })
-  }, [quantidade, noTopo, ehFolha, cores])
+  }, [quantidade, noTopo, ehFolha, cores, reforco])
 
   // Uma única malha repetida desenha todos os itens, o que é leve para o navegador.
   useLayoutEffect(() => {
@@ -130,7 +136,7 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
       </mesh>
       <instancedMesh
         ref={ref}
-        args={[ehFolha ? folha : grao, undefined, quantidade]}
+        args={[ehFolha ? folha : leve ? graoLeve : grao, undefined, quantidade]}
         dispose={null}
         frustumCulled={false}
         castShadow
@@ -139,7 +145,7 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
         <meshPhysicalMaterial
           map={ehFolha ? texturaFolha : null}
           roughness={ehFolha ? 0.6 : 0.45}
-          clearcoat={ehFolha ? 0.15 : 0.35}
+          clearcoat={leve ? 0 : ehFolha ? 0.15 : 0.35}
           side={DoubleSide}
         />
       </instancedMesh>

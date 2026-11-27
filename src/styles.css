@@ -1592,3 +1592,63 @@ input[type='radio'] {
     width: 18px;
   }
 }
+
+/* ===== plano B, modo leve e medidor ===== */
+.reserva-3d {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  color: #d5e4e1;
+  text-align: center;
+}
+
+.reserva-3d .miniatura {
+  width: auto;
+  height: 68%;
+  max-width: 100%;
+}
+
+.reserva-3d p {
+  max-width: 280px;
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.reserva-3d button {
+  padding: 6px 14px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.modo-leve {
+  padding: 8px 16px;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  background: var(--painel);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.medidor-fps {
+  position: fixed;
+  bottom: 6px;
+  left: 6px;
+  z-index: 200;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #7dffa8;
+  font: 12px ui-monospace, monospace;
+  pointer-events: none;
+}

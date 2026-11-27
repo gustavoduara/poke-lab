@@ -27,6 +27,13 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 
 O restaurante, o cardápio e os preços são fictícios. Nenhum pedido é enviado ou cobrado, e não há servidor: o carrinho fica salvo apenas no navegador.
 
+## Celulares
+
+- **Modo leve:** ativado em aparelhos modestos ou quando a animação fica lenta; também há um botão no rodapé.
+- **Plano B:** se o 3D não abrir, aparece uma ilustração e o pedido continua funcionando.
+- **Para testar:** acrescente `?fps` ao endereço para ver quadros por segundo. `?qualidade=leve` e `?sem3d` forçam cada situação.
+- Para abrir no celular pela mesma rede Wi-Fi: `npm run dev -- --host` e use o endereço "Network".
+
 ## Como rodar
 
 ```bash

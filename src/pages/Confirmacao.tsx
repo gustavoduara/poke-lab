@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router'
 import { moeda } from '../data/moeda'
 import { descricaoDoItem, ehPoke, nomeDoItem } from '../data/pedido'
 import { useCarrinho } from '../estado/carrinho'
+import { SemQuebrar } from '../components/Protegido3D'
 
 // A animação só é baixada quando um pedido é finalizado.
 const ModalPedido = lazy(() => import('../pedido-animado/ModalPedido'))
@@ -30,9 +31,11 @@ export default function Confirmacao() {
   return (
     <section className="conteudo texto centro">
       {mostrarAnimacao && (
-        <Suspense fallback={null}>
-          <ModalPedido pedido={confirmado} aoFechar={fecharAnimacao} />
-        </Suspense>
+        <SemQuebrar reserva={null}>
+          <Suspense fallback={null}>
+            <ModalPedido pedido={confirmado} aoFechar={fecharAnimacao} />
+          </Suspense>
+        </SemQuebrar>
       )}
       <p className="numero">Pedido #{confirmado.numero}</p>
       <h1>Tudo certo, {confirmado.nome}!</h1>
