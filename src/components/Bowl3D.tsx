@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, OrbitControls } from '@react-three/drei'
 import { DoubleSide, Vector2 } from 'three'
+import Base3D, { type TipoBase } from './Base3D'
 
 // Perfil do bowl (raio, altura), girado em torno do eixo vertical.
 // Começa no centro do fundo, sobe por fora, contorna a borda e desce por dentro.
@@ -31,7 +32,7 @@ function Parte({ perfil, cor }: { perfil: Vector2[]; cor: string }) {
 
 const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-export default function Bowl3D() {
+export default function Bowl3D({ base }: { base?: TipoBase }) {
   return (
     <Canvas camera={{ position: [0, 3.7, 5.3], fov: 40 }} dpr={[1, 2]}>
       <ambientLight intensity={0.9} />
@@ -41,6 +42,7 @@ export default function Bowl3D() {
       <Parte perfil={perfilExterno} cor="#2c4a4e" />
       <Parte perfil={perfilBorda} cor="#e9dfcc" />
       <Parte perfil={perfilInterno} cor="#efe7d6" />
+      {base && <Base3D key={base} tipo={base} />}
 
       <ContactShadows position={[0, -0.75, 0]} opacity={0.5} scale={6} blur={2.4} far={2} />
 

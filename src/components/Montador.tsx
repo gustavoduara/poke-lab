@@ -62,7 +62,7 @@ export default function Montador() {
       </div>
 
       <aside className="resumo">
-        <PreviaBowl />
+        <PreviaBowl base={escolhidos.find((item) => item.id === selecao.base?.[0])} />
         <ul>
           {escolhidos.map((item) => (
             <li key={item.id}>{item.nome}</li>
