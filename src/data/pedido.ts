@@ -10,6 +10,20 @@ export type ItemCarrinho = {
 }
 
 export const MAXIMO_POR_ITEM = 20
+export const TAXA_ENTREGA = 7
+
+export type Recebimento = 'entrega' | 'retirada'
+export type Pagamento = 'pix' | 'cartao' | 'dinheiro'
+
+export type PedidoConfirmado = {
+  numero: string
+  nome: string
+  recebimento: Recebimento
+  pagamento: Pagamento
+  troco: number
+  itens: ItemCarrinho[]
+  total: number
+}
 
 export const ingredientesDe = (selecao: Selecao) =>
   etapas.flatMap((etapa) =>

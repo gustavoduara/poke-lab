@@ -1,5 +1,5 @@
 import { createContext, useContext, type Dispatch, type SetStateAction } from 'react'
-import type { ItemCarrinho, Selecao } from '../data/pedido'
+import type { ItemCarrinho, PedidoConfirmado, Selecao } from '../data/pedido'
 
 export type Estado = {
   // O poke que está sendo montado, mantido ao trocar de página.
@@ -9,7 +9,9 @@ export type Estado = {
   adicionar: (selecao: Selecao) => void
   mudarQuantidade: (id: string, quantidade: number) => void
   remover: (id: string) => void
-  esvaziar: () => void
+  // Último pedido finalizado. Fica só na memória, até recarregar a página.
+  confirmado: PedidoConfirmado | null
+  concluir: (pedido: PedidoConfirmado) => void
 }
 
 export const CarrinhoContext = createContext<Estado | null>(null)

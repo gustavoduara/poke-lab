@@ -347,3 +347,58 @@ footer {
 .resumo a {
   color: var(--destaque);
 }
+
+.formulario {
+  display: grid;
+  gap: 8px;
+}
+
+.formulario > fieldset > label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.formulario input:not([type='radio']) {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #40585c;
+  border-radius: 10px;
+  background: var(--painel);
+  color: inherit;
+  font: inherit;
+}
+
+.escolhas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.escolhas label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--painel);
+  cursor: pointer;
+}
+
+input[type='radio'] {
+  accent-color: var(--destaque);
+}
+
+.aviso {
+  padding: 12px 16px;
+  border: 1px dashed var(--destaque);
+  border-radius: 12px;
+}
+
+.erro {
+  min-height: 1.4em;
+  margin: 0;
+  color: #ff9d8a;
+  text-align: center;
+}

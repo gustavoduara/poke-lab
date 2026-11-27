@@ -16,9 +16,9 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [ ] Modelos 3D detalhados
 - [x] Páginas do restaurante: início, cardápio, montador e sobre
 - [x] Carrinho com quantidades, salvo no navegador
-- [ ] Finalização do pedido
+- [x] Finalização do pedido (simulada): entrega ou retirada, forma de pagamento e confirmação
 
-Os preços e o cardápio são fictícios.
+O restaurante, o cardápio e os preços são fictícios. Nenhum pedido é enviado ou cobrado, e não há servidor: o carrinho fica salvo apenas no navegador.
 
 ## Como rodar
 

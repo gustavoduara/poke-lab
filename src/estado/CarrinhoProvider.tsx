@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
-import { MAXIMO_POR_ITEM, itemValido, type ItemCarrinho, type Selecao } from '../data/pedido'
+import {
+  MAXIMO_POR_ITEM,
+  itemValido,
+  type ItemCarrinho,
+  type PedidoConfirmado,
+  type Selecao,
+} from '../data/pedido'
 import { CarrinhoContext } from './carrinho'
 
 const CHAVE = 'pokelab:carrinho'
@@ -17,6 +23,7 @@ function carregar(): ItemCarrinho[] {
 export default function CarrinhoProvider({ children }: { children: ReactNode }) {
   const [selecao, setSelecao] = useState<Selecao>({})
   const [itens, setItens] = useState<ItemCarrinho[]>(carregar)
+  const [confirmado, setConfirmado] = useState<PedidoConfirmado | null>(null)
 
   useEffect(() => {
     try {
@@ -29,6 +36,7 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
   const adicionar = useCallback((nova: Selecao) => {
     const item = { id: crypto.randomUUID(), selecao: nova, quantidade: 1 }
     setItens((atual) => [...atual, item])
+    setConfirmado(null)
   }, [])
 
   const mudarQuantidade = useCallback((id: string, quantidade: number) => {
@@ -42,11 +50,23 @@ export default function CarrinhoProvider({ children }: { children: ReactNode }) 
     setItens((atual) => atual.filter((item) => item.id !== id))
   }, [])
 
-  const esvaziar = useCallback(() => setItens([]), [])
+  const concluir = useCallback((pedido: PedidoConfirmado) => {
+    setConfirmado(pedido)
+    setItens([])
+  }, [])
 
   return (
     <CarrinhoContext.Provider
-      value={{ selecao, setSelecao, itens, adicionar, mudarQuantidade, remover, esvaziar }}
+      value={{
+        selecao,
+        setSelecao,
+        itens,
+        adicionar,
+        mudarQuantidade,
+        remover,
+        confirmado,
+        concluir,
+      }}
     >
       {children}
     </CarrinhoContext.Provider>
