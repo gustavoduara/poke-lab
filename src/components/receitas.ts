@@ -1,4 +1,11 @@
-import { BufferGeometry, CylinderGeometry, SphereGeometry, TorusGeometry } from 'three'
+import {
+  BufferGeometry,
+  CylinderGeometry,
+  SphereGeometry,
+  Texture,
+  TorusGeometry,
+} from 'three'
+import { cuboSalmao, texturaSalmao } from './salmao'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
 type Trio = [number, number, number]
@@ -10,6 +17,8 @@ export type Camada = {
   escala: Trio
   posicao?: Trio
   brilho?: number // quanto menor a aspereza, mais brilhante
+  textura?: Texture
+  molhado?: boolean // adiciona uma película brilhante por cima
 }
 
 export type Receita = {
@@ -33,13 +42,19 @@ const tiraRepolho = arco(Math.PI * 0.8, 0.09)
 
 export const receitas: Record<string, Receita> = {
   salmao: {
-    quantidade: 13,
-    altura: 0.1,
-    inclinacao: 0.5,
+    quantidade: 12,
+    altura: 0.11,
+    inclinacao: 0.55,
     camadas: [
-      { forma: cubo, cores: ['#fa8a5c', '#f57c4c', '#ff9a6e'], escala: [0.25, 0.2, 0.23], brilho: 0.35 },
-      { forma: cubo, cores: ['#ffd7c2'], escala: [0.025, 0.205, 0.232], posicao: [-0.05, 0, 0] },
-      { forma: cubo, cores: ['#ffd7c2'], escala: [0.018, 0.205, 0.232], posicao: [0.055, 0, 0] },
+      {
+        forma: cuboSalmao,
+        // Tons quase brancos: só variam um pouco a cor da textura de cada cubo.
+        cores: ['#ffffff', '#fff0e6', '#ffe9dc'],
+        escala: [0.26, 0.21, 0.24],
+        brilho: 0.45,
+        textura: texturaSalmao,
+        molhado: true,
+      },
     ],
   },
   atum: {

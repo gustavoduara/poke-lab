@@ -34,7 +34,12 @@ function CamadaRepetida({ camada, pecas }: { camada: Camada; pecas: Matrix4[] })
       dispose={null}
       frustumCulled={false}
     >
-      <meshStandardMaterial roughness={camada.brilho ?? 0.6} />
+      <meshPhysicalMaterial
+        roughness={camada.brilho ?? 0.6}
+        map={camada.textura ?? null}
+        clearcoat={camada.molhado ? 0.7 : 0}
+        clearcoatRoughness={0.25}
+      />
     </instancedMesh>
   )
 }
