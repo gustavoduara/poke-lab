@@ -402,3 +402,8 @@ input[type='radio'] {
   color: #ff9d8a;
   text-align: center;
 }
+
+/* fundo claro atrás do pote para o plástico transparente aparecer */
+.bowl {
+  background: radial-gradient(circle at 50% 45%, #496368 0%, #29434a 38%, transparent 70%);
+}

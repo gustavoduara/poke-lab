@@ -6,7 +6,7 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 
 - [x] Base do projeto (React, TypeScript e Vite)
 - [x] Cardápio com limite por etapa e cálculo do preço
-- [x] Bowl em 3D que gira (arraste para ver de outros ângulos)
+- [x] Bowl em 3D de plástico transparente que gira (arraste para ver de outros ângulos)
 - [x] Bases em 3D: arroz gohan, arroz integral e mix de folhas
 - [x] Proteínas em 3D: salmão, atum, camarão e tofu
 - [x] Complementos em 3D: manga, abacate, pepino, edamame, cenoura e repolho roxo
