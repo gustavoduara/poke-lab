@@ -29,6 +29,8 @@ export type Camada = {
   brilho?: number // quanto menor a aspereza, mais brilhante
   textura?: Texture
   molhado?: boolean // adiciona uma película brilhante por cima
+  relevo?: number // quanto a textura salta na superfície
+  translucido?: number // intensidade do brilho que imita carne translúcida
 }
 
 export type Receita = {
@@ -63,6 +65,8 @@ export const receitas: Record<string, Receita> = {
         brilho: 0.45,
         textura: texturaSalmao,
         molhado: true,
+        relevo: 1.6,
+        translucido: 0.09,
       },
     ],
   },
@@ -78,6 +82,8 @@ export const receitas: Record<string, Receita> = {
         brilho: 0.4,
         textura: texturaAtum,
         molhado: true,
+        relevo: 1.4,
+        translucido: 0.07,
       },
     ],
   },
@@ -114,6 +120,7 @@ export const receitas: Record<string, Receita> = {
         escala: [0.24, 0.19, 0.24],
         brilho: 0.85,
         textura: texturaTofu,
+        relevo: 1.2,
       },
     ],
   },
@@ -129,6 +136,8 @@ export const receitas: Record<string, Receita> = {
         brilho: 0.4,
         textura: texturaManga,
         molhado: true,
+        relevo: 0.8,
+        translucido: 0.05,
       },
     ],
   },

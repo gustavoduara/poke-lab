@@ -45,20 +45,63 @@ export function riscar(
   }
 }
 
+// Manchas redondas e esfumadas. As cores vêm como "r,g,b".
+export function manchar(
+  ctx: CanvasRenderingContext2D,
+  lado: number,
+  sortear: Sorteio,
+  quantidade: number,
+  cores: string[],
+  forca: number,
+) {
+  for (let i = 0; i < quantidade; i++) {
+    const x = sortear() * lado
+    const y = sortear() * lado
+    const raio = 14 + sortear() * 44
+    const mancha = ctx.createRadialGradient(x, y, 0, x, y, raio)
+    mancha.addColorStop(0, `rgba(${cores[i % cores.length]},${forca})`)
+    mancha.addColorStop(1, `rgba(${cores[i % cores.length]},0)`)
+    ctx.fillStyle = mancha
+    ctx.fillRect(x - raio, y - raio, raio * 2, raio * 2)
+  }
+}
+
+// Pontinhos que quebram a aparência lisa.
+export function pontilhar(
+  ctx: CanvasRenderingContext2D,
+  lado: number,
+  sortear: Sorteio,
+  quantidade: number,
+  cores: string[],
+) {
+  for (let i = 0; i < quantidade; i++) {
+    ctx.fillStyle = cores[i % cores.length]
+    ctx.fillRect(sortear() * lado, sortear() * lado, 1 + sortear() * 1.6, 1 + sortear() * 1.6)
+  }
+}
+
 // Cubo levemente torto, para não parecer um dado de plástico.
-export function criarCuboIrregular(arredondado: number, torto: number, fase = 0) {
-  const forma = new RoundedBoxGeometry(1, 1, 1, 4, arredondado)
+// A aspereza cria pequenas ondulações na superfície, como em um corte de verdade.
+export function criarCuboIrregular(
+  arredondado: number,
+  torto: number,
+  fase = 0,
+  aspereza = 0,
+) {
+  const forma = new RoundedBoxGeometry(1, 1, 1, aspereza ? 7 : 4, arredondado)
   const posicoes = forma.attributes.position
   const ponto = new Vector3()
   for (let i = 0; i < posicoes.count; i++) {
     ponto.fromBufferAttribute(posicoes, i)
     // A deformação depende só da posição, então as faces continuam unidas.
     const onda = Math.sin(ponto.y * 5 + ponto.z * 3 + fase) * torto
+    const ruido =
+      aspereza * Math.sin(ponto.x * 17 + ponto.z * 11) * Math.sin(ponto.y * 13 - ponto.x * 7)
     posicoes.setXYZ(
       i,
-      ponto.x * (1 + ponto.y * torto * 2.6) + onda,
-      ponto.y + Math.sin(ponto.x * 4 - ponto.z * 5 + fase) * torto * 0.8,
-      ponto.z * (1 - ponto.x * torto * 2.2) + onda * 0.6,
+      ponto.x * (1 + ponto.y * torto * 2.6) + onda + ruido,
+      ponto.y + Math.sin(ponto.x * 4 - ponto.z * 5 + fase) * torto * 0.8 + ruido,
+      ponto.z * (1 - ponto.x * torto * 2.2) + onda * 0.6 + ruido,
     )
   }
   forma.computeVertexNormals()

@@ -38,7 +38,7 @@ const estilos = {
   gohan: { fundo: '#e6dfcc', cores: ['#fffdf4', '#f4efe2', '#ebe4d0'] },
   integral: { fundo: '#a98658', cores: ['#d8b988', '#c9a876', '#b08a57'] },
   folhas: {
-    fundo: '#24451d',
+    fundo: '#3c6a2a',
     // Verdes de vários tons e algumas folhas roxas, como em um mix de verdade.
     cores: ['#8fd13f', '#3f8a2c', '#6fb52f', '#5a2a45', '#b5e35a', '#2f6e28', '#7a3a55'],
   },
@@ -48,7 +48,7 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
   const ref = useRef<InstancedMesh>(null)
   const ehFolha = tipo === 'folhas'
   const noTopo = ehFolha ? 120 : 2000
-  const naLateral = ehFolha ? 110 : 1700
+  const naLateral = ehFolha ? 300 : 1700
   const quantidade = noTopo + naLateral
   const { fundo, cores } = estilos[tipo]
 
@@ -124,7 +124,7 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
 
   return (
     <group>
-      <mesh ref={monte}>
+      <mesh ref={monte} receiveShadow>
         <latheGeometry args={[perfilMonte, 64]} />
         <meshStandardMaterial color={fundo} roughness={0.9} side={DoubleSide} />
       </mesh>
@@ -133,6 +133,8 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
         args={[ehFolha ? folha : grao, undefined, quantidade]}
         dispose={null}
         frustumCulled={false}
+        castShadow
+        receiveShadow
       >
         <meshPhysicalMaterial
           map={ehFolha ? texturaFolha : null}

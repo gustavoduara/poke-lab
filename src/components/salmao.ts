@@ -1,5 +1,5 @@
 import { CanvasTexture, SRGBColorSpace } from 'three'
-import { criarCuboIrregular } from './formas'
+import { criarCuboIrregular, manchar, pintarFundo, pontilhar, riscar } from './formas'
 import { criarSorteio } from './terreno'
 
 const LADO = 256
@@ -11,44 +11,45 @@ function desenharTextura() {
   const ctx = tela.getContext('2d')!
   const sortear = criarSorteio(2024)
 
-  const fundo = ctx.createLinearGradient(0, 0, LADO, LADO)
-  fundo.addColorStop(0, '#fb9a5f')
-  fundo.addColorStop(0.5, '#f58448')
-  fundo.addColorStop(1, '#fa9258')
-  ctx.fillStyle = fundo
-  ctx.fillRect(0, 0, LADO, LADO)
+  pintarFundo(ctx, LADO, '#f47c43')
+
+  // Manchas suaves: a carne nunca tem uma cor só.
+  manchar(ctx, LADO, sortear, 46, ['255,150,92', '226,88,38', '255,178,128'], 0.5)
 
   // Fibras: muitos riscos finos e quase transparentes.
-  for (let i = 0; i < 700; i++) {
-    const x = sortear() * LADO
-    const y = sortear() * LADO
-    ctx.strokeStyle = sortear() > 0.5 ? 'rgba(255,190,140,0.22)' : 'rgba(214,92,40,0.16)'
-    ctx.lineWidth = 1 + sortear() * 2
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-    ctx.lineTo(x + 10 + sortear() * 18, y - 3 - sortear() * 7)
-    ctx.stroke()
-  }
+  riscar(ctx, LADO, sortear, 900, ['rgba(255,196,150,0.22)', 'rgba(196,74,28,0.18)'], 16, -0.34)
 
-  // Veios de gordura: faixas curvas e paralelas, com bordas suaves.
+  // Veios de gordura: faixas paralelas, irregulares e com bordas suaves.
   ctx.lineCap = 'round'
-  for (let inicio = -40; inicio < LADO + 120; inicio += 38 + sortear() * 18) {
-    const largura = 3 + sortear() * 4
-    const curva = 22 + sortear() * 14
+  ctx.lineJoin = 'round'
+  for (let inicio = -40; inicio < LADO + 130; inicio += 24 + sortear() * 26) {
+    const largura = 1.6 + sortear() * 4.6
+    const curva = 18 + sortear() * 20
+    const forca = 0.55 + sortear() * 0.45
+    // O mesmo caminho tremido é usado nas três camadas do veio.
+    const caminho = Array.from({ length: 15 }, (_, k) => {
+      const t = k / 14
+      return [
+        inicio - 78 * t + Math.sin(t * Math.PI) * curva + (sortear() - 0.5) * 5,
+        -10 + t * (LADO + 20),
+      ]
+    })
     const camadas: [number, string][] = [
-      [largura * 2.4, 'rgba(255,205,170,0.28)'],
-      [largura, 'rgba(255,226,204,0.75)'],
-      [largura * 0.35, 'rgba(255,244,232,0.85)'],
+      [largura * 2.8, `rgba(255,184,140,${0.28 * forca})`],
+      [largura, `rgba(255,218,192,${0.72 * forca})`],
+      [largura * 0.34, `rgba(255,243,232,${0.9 * forca})`],
     ]
     for (const [espessura, cor] of camadas) {
       ctx.strokeStyle = cor
       ctx.lineWidth = espessura
       ctx.beginPath()
-      ctx.moveTo(inicio, -10)
-      ctx.quadraticCurveTo(inicio - 20 + curva, LADO / 2, inicio - 70, LADO + 10)
+      caminho.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)))
       ctx.stroke()
     }
   }
+
+  // Granulado fino, que também vira pequenas irregularidades no relevo.
+  pontilhar(ctx, LADO, sortear, 2600, ['rgba(255,214,180,0.2)', 'rgba(160,56,18,0.14)'])
 
   const textura = new CanvasTexture(tela)
   textura.colorSpace = SRGBColorSpace
@@ -57,4 +58,4 @@ function desenharTextura() {
 }
 
 export const texturaSalmao = desenharTextura()
-export const cuboSalmao = criarCuboIrregular(0.16, 0.045)
+export const cuboSalmao = criarCuboIrregular(0.15, 0.045, 0, 0.012)

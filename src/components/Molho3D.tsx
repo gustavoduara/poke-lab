@@ -58,7 +58,7 @@ export default function Molho3D({ tipo, fatias, temBase }: Props) {
   useAnimacao(DURACAO, despejar)
 
   return (
-    <mesh geometry={geometria}>
+    <mesh geometry={geometria} castShadow receiveShadow>
       <meshStandardMaterial
         color={cor}
         roughness={aspereza}

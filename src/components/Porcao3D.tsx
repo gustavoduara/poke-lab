@@ -33,12 +33,21 @@ function CamadaRepetida({ camada, pecas }: { camada: Camada; pecas: Matrix4[] })
       args={[camada.forma, undefined, pecas.length]}
       dispose={null}
       frustumCulled={false}
+      castShadow
+      receiveShadow
     >
       <meshPhysicalMaterial
         roughness={camada.brilho ?? 0.6}
         map={camada.textura ?? null}
         clearcoat={camada.molhado ? 0.7 : 0}
         clearcoatRoughness={0.25}
+        // A própria textura serve de relevo: os veios saltam um pouco.
+        bumpMap={camada.textura ?? null}
+        bumpScale={camada.relevo ?? 0}
+        // Um brilho interno bem leve imita a luz atravessando a carne.
+        emissive={camada.translucido ? '#ffffff' : '#000000'}
+        emissiveMap={camada.translucido ? (camada.textura ?? null) : null}
+        emissiveIntensity={camada.translucido ?? 0}
       />
     </instancedMesh>
   )
@@ -58,7 +67,11 @@ export default function Porcao3D({ receita, fatia, temBase }: Props) {
       const objeto = new Object3D()
       objeto.position.set(
         x,
-        apoio(Math.hypot(x, z), temBase) + receita.altura + (i % 3) * 0.025,
+        apoio(Math.hypot(x, z), temBase) +
+          receita.altura +
+          // Quanto mais perto do centro da porção, mais alto o pedaço.
+          Math.max(0, 1 - distancia / 0.38) * 0.15 +
+          (i % 3) * 0.018,
         z,
       )
       objeto.rotation.set(

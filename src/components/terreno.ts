@@ -46,8 +46,9 @@ export function alturaSuperficie(x: number, z: number, fatias: number[], temBase
   const chao = apoio(Math.hypot(x, z), temBase)
   const relevo = fatias.reduce((maior, fatia) => {
     const [cx, cz] = centroFatia(fatia)
-    const proximidade = 1 - Math.hypot(x - cx, z - cz) / 0.6
-    return Math.max(maior, Math.min(1, proximidade * 2.2))
+    // Vale 1 no meio da porção e cai até 0 na borda do monte.
+    const proximidade = (0.5 - Math.hypot(x - cx, z - cz)) / 0.38
+    return Math.max(maior, Math.min(1, proximidade))
   }, 0)
-  return chao + 0.09 + relevo * 0.2
+  return chao + 0.065 + relevo * 0.29
 }

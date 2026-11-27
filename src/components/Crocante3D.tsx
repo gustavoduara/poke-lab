@@ -80,7 +80,14 @@ export default function Crocante3D({ tipo, ordem, fatias, temBase }: Props) {
   useQueda(ref, matrizes, { espalhamento: 0.8 })
 
   return (
-    <instancedMesh ref={ref} args={[forma, undefined, quantidade]} dispose={null} frustumCulled={false}>
+    <instancedMesh
+      ref={ref}
+      args={[forma, undefined, quantidade]}
+      dispose={null}
+      frustumCulled={false}
+      castShadow
+      receiveShadow
+    >
       <meshStandardMaterial roughness={aspereza} side={DoubleSide} />
     </instancedMesh>
   )

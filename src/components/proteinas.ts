@@ -1,9 +1,17 @@
 import { BufferGeometry, ConeGeometry, Quaternion, TubeGeometry, Vector3, Curve } from 'three'
-import { criarCuboIrregular, criarTextura, pintarFundo, riscar } from './formas'
+import {
+  criarCuboIrregular,
+  criarTextura,
+  manchar,
+  pintarFundo,
+  pontilhar,
+  riscar,
+} from './formas'
 
 // Atum cru: vermelho profundo com as linhas suaves do músculo.
 export const texturaAtum = criarTextura(311, (ctx, lado, sortear) => {
-  pintarFundo(ctx, lado, '#a81f38')
+  pintarFundo(ctx, lado, '#a31a33')
+  manchar(ctx, lado, sortear, 40, ['190,40,60', '112,8,30', '206,66,80'], 0.55)
   riscar(ctx, lado, sortear, 800, ['rgba(214,70,86,0.28)', 'rgba(105,10,28,0.28)'], 18, 0.2)
   ctx.strokeStyle = 'rgba(232,130,138,0.4)'
   for (let y = -30; y < lado + 30; y += 36 + sortear() * 20) {
@@ -13,8 +21,9 @@ export const texturaAtum = criarTextura(311, (ctx, lado, sortear) => {
     ctx.bezierCurveTo(lado * 0.3, y - 26, lado * 0.7, y + 6, lado + 10, y - 22)
     ctx.stroke()
   }
+  pontilhar(ctx, lado, sortear, 2200, ['rgba(232,120,130,0.16)', 'rgba(70,0,16,0.18)'])
 })
-export const cuboAtum = criarCuboIrregular(0.14, 0.035, 2)
+export const cuboAtum = criarCuboIrregular(0.13, 0.035, 2, 0.01)
 
 // Tofu: creme, fosco, com pequenos furos.
 export const texturaTofu = criarTextura(523, (ctx, lado, sortear) => {
