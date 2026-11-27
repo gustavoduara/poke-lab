@@ -3,7 +3,8 @@ import { Environment, Lightformer } from '@react-three/drei'
 const telaPequena = window.matchMedia('(max-width: 760px)').matches
 
 // A iluminação usada em todas as cenas do poke.
-export default function Luzes({ sombras }: { sombras: boolean }) {
+// "alcance" é o tamanho da área que recebe sombras.
+export default function Luzes({ sombras, alcance = 2.3 }: { sombras: boolean; alcance?: number }) {
   return (
     <>
       {/* Céu claro e chão quente: as partes de baixo ficam um pouco mais escuras. */}
@@ -15,10 +16,10 @@ export default function Luzes({ sombras }: { sombras: boolean }) {
         color="#fff3e4"
         castShadow={sombras}
         shadow-mapSize={telaPequena ? [1024, 1024] : [2048, 2048]}
-        shadow-camera-left={-2.3}
-        shadow-camera-right={2.3}
-        shadow-camera-top={2.3}
-        shadow-camera-bottom={-2.3}
+        shadow-camera-left={-alcance}
+        shadow-camera-right={alcance}
+        shadow-camera-top={alcance}
+        shadow-camera-bottom={-alcance}
         shadow-camera-near={2}
         shadow-camera-far={11}
         shadow-bias={-0.0004}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import BowlApresentacao from '../components/BowlApresentacao'
 import Capa from '../components/Capa'
 import CartaoPoke from '../components/CartaoPoke'
@@ -9,6 +9,9 @@ import { moeda } from '../data/moeda'
 import { ingredientesDe } from '../data/pedido'
 import { pokesProntos, type PokePronto } from '../data/prontos'
 import { useCarrinho } from '../estado/carrinho'
+import { sushis, type SushiProduto } from '../data/sushi'
+import CartaoSushi from '../sushi/CartaoSushi'
+import VitrineSushi from '../sushi/VitrineSushi'
 
 const totalDeIngredientes = etapas.reduce((soma, etapa) => soma + etapa.opcoes.length, 0)
 
@@ -22,6 +25,7 @@ const simplificar = (texto: string) =>
 
 export default function Inicio() {
   const [aberto, setAberto] = useState<PokePronto | null>(null)
+  const [sushiAberto, setSushiAberto] = useState<SushiProduto | null>(null)
   const [categoria, setCategoria] = useState<Categoria>('todos')
   const [busca, setBusca] = useState('')
   const { setSelecao } = useCarrinho()
@@ -70,7 +74,7 @@ export default function Inicio() {
             </span>
           </button>
           {/* Com a janela de um poke aberta, este 3D sai para aliviar o aparelho. */}
-          <div className="cena">{!aberto && <BowlApresentacao />}</div>
+          <div className="cena">{!aberto && !sushiAberto && <BowlApresentacao />}</div>
         </section>
 
         <div className="filtros">
@@ -116,6 +120,24 @@ export default function Inicio() {
           </section>
         ))}
 
+        {!filtrando && (
+          <section className="secao">
+            <div className="titulo-com-link">
+              <h2>Sushi</h2>
+              <Link to="/sushi">Ver todos os sushis →</Link>
+            </div>
+            <ul className="produtos">
+              {sushis
+                .filter((sushi) => sushi.grupo === 'combinados')
+                .map((sushi) => (
+                  <li key={sushi.id}>
+                    <CartaoSushi sushi={sushi} aoAbrir={() => setSushiAberto(sushi)} />
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
+
         <section className="secao">
           <h2>Do seu jeito</h2>
           <ul className="produtos">
@@ -144,6 +166,9 @@ export default function Inicio() {
       </div>
 
       {aberto && <VitrinePoke poke={aberto} aoFechar={() => setAberto(null)} />}
+      {sushiAberto && (
+        <VitrineSushi sushi={sushiAberto} aoFechar={() => setSushiAberto(null)} />
+      )}
     </>
   )
 }

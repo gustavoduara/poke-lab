@@ -10,6 +10,7 @@ export default function Menu() {
     <nav aria-label="Principal">
       <NavLink to="/cardapio">Cardápio</NavLink>
       <NavLink to="/montar">Monte seu poke</NavLink>
+      <NavLink to="/sushi">Sushi</NavLink>
       <NavLink to="/sobre">Sobre</NavLink>
       <NavLink to="/carrinho" className="carrinho" aria-label={`Carrinho com ${unidades} itens`}>
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">

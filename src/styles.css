@@ -1498,3 +1498,97 @@ input[type='radio'] {
     align-self: center;
   }
 }
+
+/* ===== sushi ===== */
+.pagina-sushi h1 {
+  margin: 24px 0 4px;
+}
+
+.titulo-com-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.titulo-com-link a {
+  color: var(--destaque);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.foto-sushi {
+  background: #d9c3a0;
+}
+
+.palco-sushi {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--palco);
+  color: #d5e4e1;
+  cursor: grab;
+}
+
+.palco-sushi:active {
+  cursor: grabbing;
+}
+
+/* no celular, arrastar na vertical continua rolando a janela */
+.palco-sushi * {
+  touch-action: pan-y !important;
+}
+
+.vitrine:has(.vitrine-sushi) {
+  width: min(1060px, calc(100% - 24px));
+}
+
+.vitrine-corpo.vitrine-sushi {
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+}
+
+.fogo {
+  margin: 8px 0;
+  color: var(--destaque);
+  font-weight: 700;
+}
+
+.preco small {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .vitrine-corpo.vitrine-sushi {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .palco-sushi {
+    aspect-ratio: 5 / 4;
+  }
+
+  .vitrine-sushi .vitrine-texto h2 {
+    font-size: 1.4rem;
+  }
+
+  .vitrine-sushi .suave {
+    margin: 4px 0;
+  }
+
+  /* o menu tem cinco opções no celular */
+  nav a {
+    padding: 10px 5px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  nav a {
+    padding: 10px 3px;
+    font-size: 0.7rem;
+  }
+
+  .carrinho svg {
+    width: 18px;
+  }
+}
