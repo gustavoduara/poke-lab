@@ -407,3 +407,115 @@ input[type='radio'] {
 .bowl {
   background: radial-gradient(circle at 50% 45%, #496368 0%, #29434a 38%, transparent 70%);
 }
+
+/* bowl separado em tela cheia */
+.palco {
+  width: min(360px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.palco .bowl {
+  width: 100%;
+  height: 100%;
+}
+
+.palco .bowl.separado {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: radial-gradient(ellipse at 50% 45%, #33525a 0%, #182d32 45%, #0f1b1d 80%);
+}
+
+.bowl.separado * {
+  touch-action: none !important;
+}
+
+.bowl.separado .juntar {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  z-index: 70;
+  transform: translateX(-50%);
+  padding: 8px 22px;
+  white-space: nowrap;
+}
+
+.instrucao {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  margin: 0;
+  color: var(--suave);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.rotulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: 220px;
+  transform: translate(-12px, -50%);
+  opacity: 0;
+  color: var(--texto);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  transition:
+    opacity 0.35s,
+    transform 0.35s;
+}
+
+/* linha que liga o ingrediente ao nome */
+.rotulo::before {
+  content: '';
+  flex: none;
+  width: 28px;
+  height: 2px;
+  background: var(--destaque);
+}
+
+.rotulo span {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--destaque);
+  color: var(--fundo);
+  font-size: 0.8rem;
+}
+
+.rotulo.visivel {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.separar {
+  margin-bottom: 12px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 500px) {
+  .rotulo {
+    max-width: 125px;
+    gap: 5px;
+    font-size: 0.82rem;
+  }
+
+  .rotulo::before {
+    width: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotulo {
+    transition: none;
+  }
+}

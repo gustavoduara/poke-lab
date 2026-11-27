@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { etapas, type Etapa } from '../data/cardapio'
 import { ingredientesDe, podeAdicionar, precoDoBowl } from '../data/pedido'
@@ -9,6 +9,18 @@ import { moeda } from '../data/moeda'
 export default function Montador() {
   const { selecao, setSelecao, adicionar } = useCarrinho()
   const [adicionado, setAdicionado] = useState(false)
+  const [fechando, setFechando] = useState(false)
+
+  // Dá tempo de ver a tampa fechar e depois libera um pote novo.
+  // A limpeza também roda se a pessoa trocar de página no meio.
+  useEffect(() => {
+    if (!fechando) return
+    const espera = setTimeout(() => setFechando(false), 2600)
+    return () => {
+      clearTimeout(espera)
+      setSelecao({})
+    }
+  }, [fechando, setSelecao])
 
   function alternar(etapa: Etapa, id: string) {
     setAdicionado(false)
@@ -29,7 +41,7 @@ export default function Montador() {
 
   function adicionarAoCarrinho() {
     adicionar(selecao)
-    setSelecao({})
+    setFechando(true)
     setAdicionado(true)
   }
 
@@ -48,7 +60,8 @@ export default function Montador() {
                 {etapa.opcoes.map((opcao) => {
                   const ativo = marcados.includes(opcao.id)
                   const bloqueado =
-                    !ativo && etapa.maximo > 1 && marcados.length >= etapa.maximo
+                    fechando ||
+                    (!ativo && etapa.maximo > 1 && marcados.length >= etapa.maximo)
                   return (
                     <button
                       key={opcao.id}
@@ -73,6 +86,7 @@ export default function Montador() {
       <aside className="resumo">
         <PreviaBowl
           pedido={selecao}
+          fechado={fechando}
           descricao={
             escolhidos.length
               ? `Bowl em 3D com ${escolhidos.map((item) => item.nome).join(', ')}`
@@ -90,7 +104,7 @@ export default function Montador() {
         <button
           type="button"
           className="botao"
-          disabled={!completo}
+          disabled={!completo || fechando}
           onClick={adicionarAoCarrinho}
         >
           Adicionar ao carrinho

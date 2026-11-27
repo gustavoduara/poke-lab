@@ -1,31 +1,108 @@
-import { Canvas } from '@react-three/fiber'
+import { useState } from 'react'
+import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
 import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei'
 import Pote3D from './Pote3D'
+import Tampa3D from './Tampa3D'
 import Base3D, { type TipoBase } from './Base3D'
 import Porcao3D from './Porcao3D'
 import Molho3D, { type TipoMolho } from './Molho3D'
 import Crocante3D, { type TipoCrocante } from './Crocante3D'
+import Camada3D, { type Destino } from './Camada3D'
+import CameraGuiada, { POSICAO_INICIAL } from './CameraGuiada'
 import { receitas } from './receitas'
-import { fatiasComplemento, fatiasProteina } from './terreno'
+import {
+  RAIO_FATIA,
+  apoio,
+  centroFatia,
+  fatiasComplemento,
+  fatiasProteina,
+} from './terreno'
 import { useFatiasFixas } from './fatias'
+import { ingredientesDe, type Selecao } from '../data/pedido'
 
 const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-export type Pedido = Record<string, string[]>
+// Medidas da coluna quando o bowl está separado.
+const PASSO = 0.95
+const TANGENTE = Math.tan((20 * Math.PI) / 180) // metade do campo de visão da câmera
 
-export default function Bowl3D({ pedido }: { pedido: Pedido }) {
+export type Pedido = Selecao
+
+type Props = {
+  pedido: Pedido
+  separado: boolean
+  fechado: boolean // tampa no lugar
+  aoClicar: () => void
+}
+
+function Cena({ pedido, separado, fechado, aoClicar }: Props) {
+  const { width, height } = useThree((estado) => estado.size)
+  const [mexeu, setMexeu] = useState(false)
+  const [arrastando, setArrastando] = useState(false)
+  const [estadoAnterior, setEstadoAnterior] = useState(separado)
+
+  // Ao separar ou juntar, o bowl volta a girar sozinho depois de montado.
+  if (estadoAnterior !== separado) {
+    setEstadoAnterior(separado)
+    setMexeu(false)
+  }
+
   const base = pedido.base?.[0] as TipoBase | undefined
   const molho = pedido.molho?.[0] as TipoMolho | undefined
+  const crocantes = pedido.crocante ?? []
   const proteinas = useFatiasFixas(pedido.proteina ?? [], fatiasProteina)
   const complementos = useFatiasFixas(pedido.complementos ?? [], fatiasComplemento)
   const porcoes = [...proteinas, ...complementos]
   const fatiasOcupadas = porcoes.map((porcao) => porcao.fatia)
 
+  // A coluna, de baixo para cima: pote, base, porções, molho e crocantes.
+  const ordem = [
+    'pote',
+    ...(base ? [base] : []),
+    ...porcoes.map((porcao) => porcao.id),
+    ...(molho ? [molho] : []),
+    ...crocantes,
+  ]
+  const alturaColuna = (ordem.length - 1) * PASSO + 1.7
+  const distancia = Math.max(
+    (alturaColuna / (2 * TANGENTE)) * 1.16,
+    // Em telas estreitas, afasta o bastante para caber na largura.
+    2.6 / (2 * TANGENTE * (width / height)),
+    7,
+  )
+  const pixelsPorUnidade = height / (2 * distancia * TANGENTE)
+  const afastamento = Math.min(170, Math.max(48, pixelsPorUnidade * 1.15))
+  const nomes = new Map(ingredientesDe(pedido).map((item) => [item.id, item.nome]))
+
+  function destino(id: string, escala: number): Destino | undefined {
+    if (!separado) return undefined
+    const i = ordem.indexOf(id)
+    return {
+      altura: (i - (ordem.length - 1) / 2) * PASSO,
+      escala,
+      // A de cima sai primeiro, depois uma de cada vez.
+      atraso: (ordem.length - 1 - i) * 0.45,
+      numero: ordem.length - i,
+      nome: id === 'pote' ? 'Pote' : (nomes.get(id) ?? id),
+      afastamento,
+    }
+  }
+
+  const topo = base ? 0.4 : -0.15
+
+  function clicar(evento: ThreeEvent<MouseEvent>) {
+    evento.stopPropagation()
+    // Se o mouse andou, a pessoa estava girando, não clicando.
+    if (evento.delta <= 6) aoClicar()
+  }
+
   return (
-    <Canvas camera={{ position: [0, 3.7, 5.3], fov: 40 }} dpr={[1, 2]}>
+    <>
       <ambientLight intensity={0.55} />
       <directionalLight position={[3, 5, 2]} intensity={1.7} />
       <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#ffd9c7" />
+      {/* Luz de baixo, para o poke continuar visível quando girado ao contrário. */}
+      <directionalLight position={[0, -5, 2]} intensity={0.5} />
 
       {/* Painéis de luz que aparecem refletidos no plástico, como em um estúdio. */}
       <Environment resolution={256} frames={1} environmentIntensity={0.55}>
@@ -35,32 +112,85 @@ export default function Bowl3D({ pedido }: { pedido: Pedido }) {
         <Lightformer form="ring" intensity={1.2} position={[2, 3, 5]} scale={1.5} />
       </Environment>
 
-      <Pote3D />
-      {base && <Base3D key={base} tipo={base} />}
-      {porcoes.map(({ id, fatia }) => (
-        <Porcao3D key={id} receita={receitas[id]} fatia={fatia} temBase={!!base} />
-      ))}
-      {molho && <Molho3D key={molho} tipo={molho} fatias={fatiasOcupadas} temBase={!!base} />}
-      {pedido.crocante?.map((id, i) => (
-        <Crocante3D
-          key={id}
-          tipo={id as TipoCrocante}
-          ordem={i}
-          fatias={fatiasOcupadas}
-          temBase={!!base}
-        />
-      ))}
+      <group
+        onClick={clicar}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = '')}
+      >
+        <Camada3D centro={[0, 0, 0]} destino={destino('pote', 0.58)}>
+          <Pote3D />
+        </Camada3D>
 
-      <ContactShadows position={[0, -0.59, 0]} opacity={0.3} scale={6} blur={2.4} far={2} />
+        {base && (
+          <Camada3D key={base} centro={[0, -0.1, 0]} destino={destino(base, 0.58)}>
+            <Base3D tipo={base} />
+          </Camada3D>
+        )}
 
+        {porcoes.map(({ id, fatia }) => {
+          const [x, z] = centroFatia(fatia)
+          return (
+            <Camada3D
+              key={id}
+              centro={[x, apoio(RAIO_FATIA, !!base) + 0.12, z]}
+              destino={destino(id, 1.15)}
+            >
+              <Porcao3D receita={receitas[id]} fatia={fatia} temBase={!!base} />
+            </Camada3D>
+          )
+        })}
+
+        {molho && (
+          <Camada3D key={molho} centro={[0, topo, 0]} destino={destino(molho, 0.7)}>
+            <Molho3D tipo={molho} fatias={fatiasOcupadas} temBase={!!base} />
+          </Camada3D>
+        )}
+
+        {crocantes.map((id, i) => (
+          <Camada3D key={id} centro={[0, topo, 0]} destino={destino(id, 0.72)}>
+            <Crocante3D
+              tipo={id as TipoCrocante}
+              ordem={i}
+              fatias={fatiasOcupadas}
+              temBase={!!base}
+            />
+          </Camada3D>
+        ))}
+      </group>
+
+      {fechado && <Tampa3D />}
+
+      {!separado && (
+        <ContactShadows position={[0, -0.59, 0]} opacity={0.3} scale={6} blur={2.4} far={2} />
+      )}
+
+      <CameraGuiada distancia={separado ? distancia : null} cancelada={arrastando} />
+
+      {/* Segurando o botão do mouse, dá para girar para qualquer lado. */}
       <OrbitControls
         enableZoom={false}
         enablePan={false}
-        autoRotate={!semAnimacao}
+        enableDamping
+        dampingFactor={0.12}
+        rotateSpeed={0.9}
+        autoRotate={!semAnimacao && !separado && !mexeu}
         autoRotateSpeed={1.5}
-        minPolarAngle={Math.PI / 8}
-        maxPolarAngle={Math.PI / 2.2}
+        minPolarAngle={0}
+        maxPolarAngle={Math.PI}
+        onStart={() => setArrastando(true)}
+        onEnd={() => {
+          setArrastando(false)
+          setMexeu(true)
+        }}
       />
+    </>
+  )
+}
+
+export default function Bowl3D(props: Props) {
+  return (
+    <Canvas camera={{ position: POSICAO_INICIAL, fov: 40 }} dpr={[1, 2]}>
+      <Cena {...props} />
     </Canvas>
   )
 }
