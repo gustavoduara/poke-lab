@@ -13,7 +13,8 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [x] Molhos em 3D: shoyu, tarê e maionese spicy
 - [x] Crocantes em 3D: gergelim, nori e couve crispy
 - [x] Animação: ingredientes caindo no bowl e molho sendo despejado
-- [ ] Modelos 3D detalhados
+- [x] Formas e texturas próprias, feitas por código, para salmão, atum, camarão, tofu, manga, arroz e folhas
+- [ ] Modelos 3D detalhados para os demais ingredientes
 - [x] Páginas do restaurante: início, cardápio, montador e sobre
 - [x] Carrinho com quantidades, salvo no navegador
 - [x] Finalização do pedido (simulada): entrega ou retirada, forma de pagamento e confirmação

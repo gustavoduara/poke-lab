@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, DoubleSide, InstancedMesh, Mesh, Object3D, Vector2 } from 'three'
 import { useAnimacao, useQueda } from './animacao'
+import { folha, grao, texturaFolha } from './bases'
 import { RAIO_BASE, alturaBase, criarSorteio } from './terreno'
 
 export type TipoBase = 'gohan' | 'integral' | 'folhas'
@@ -13,13 +14,17 @@ const perfilMonte = Array.from({ length: 17 }, (_, i) => {
 const estilos = {
   gohan: { fundo: '#e6dfcc', cores: ['#fffdf4', '#f4efe2', '#ebe4d0'] },
   integral: { fundo: '#a98658', cores: ['#d8b988', '#c9a876', '#b08a57'] },
-  folhas: { fundo: '#3f6b2f', cores: ['#8cc152', '#6fa84f', '#4f8a38', '#a8cf6a'] },
+  folhas: {
+    fundo: '#24451d',
+    // Verdes de vários tons e algumas folhas roxas, como em um mix de verdade.
+    cores: ['#8fd13f', '#3f8a2c', '#6fb52f', '#5a2a45', '#b5e35a', '#2f6e28', '#7a3a55'],
+  },
 }
 
 export default function Base3D({ tipo }: { tipo: TipoBase }) {
   const ref = useRef<InstancedMesh>(null)
   const ehFolha = tipo === 'folhas'
-  const quantidade = ehFolha ? 150 : 1100
+  const quantidade = ehFolha ? 120 : 2200
   const { fundo, cores } = estilos[tipo]
 
   // Calcula posição, giro, tamanho e cor de cada grão ou folha.
@@ -30,20 +35,20 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
       const raio = Math.sqrt(sortear()) * (RAIO_BASE - (ehFolha ? 0.2 : 0.06))
       const angulo = sortear() * Math.PI * 2
       const objeto = new Object3D()
-      objeto.position.set(
-        Math.cos(angulo) * raio,
-        alturaBase(raio) + sortear() * (ehFolha ? 0.16 : 0.05),
-        Math.sin(angulo) * raio,
-      )
-      const inclinacao = ehFolha ? 0.9 : 0.5
+      const x = Math.cos(angulo) * raio
+      const z = Math.sin(angulo) * raio
+      // Pequenos montinhos deixam o arroz soltinho em vez de liso.
+      const relevo = ehFolha ? 0 : Math.max(0, Math.sin(x * 7.5) * Math.cos(z * 6.5)) * 0.055
+      objeto.position.set(x, alturaBase(raio) + relevo + sortear() * (ehFolha ? 0.08 : 0.045), z)
+      const inclinacao = ehFolha ? 0.75 : 0.8
       objeto.rotation.set(
         (sortear() - 0.5) * inclinacao,
         sortear() * Math.PI * 2,
         (sortear() - 0.5) * inclinacao,
       )
       const tamanho = 0.8 + sortear() * 0.4
-      if (ehFolha) objeto.scale.set(0.24 * tamanho, 0.025, 0.15 * tamanho)
-      else objeto.scale.set(0.075 * tamanho, 0.035 * tamanho, 0.038 * tamanho)
+      if (ehFolha) objeto.scale.setScalar(0.48 * tamanho)
+      else objeto.scale.set(0.072 * tamanho, 0.03 * tamanho, 0.031 * tamanho)
       objeto.updateMatrix()
       return { matriz: objeto.matrix.clone(), cor: new Color(cores[i % cores.length]) }
     })
@@ -75,9 +80,18 @@ export default function Base3D({ tipo }: { tipo: TipoBase }) {
         <latheGeometry args={[perfilMonte, 64]} />
         <meshStandardMaterial color={fundo} roughness={0.9} side={DoubleSide} />
       </mesh>
-      <instancedMesh ref={ref} args={[undefined, undefined, quantidade]} frustumCulled={false}>
-        <sphereGeometry args={[1, 10, 8]} />
-        <meshStandardMaterial roughness={ehFolha ? 0.65 : 0.55} />
+      <instancedMesh
+        ref={ref}
+        args={[ehFolha ? folha : grao, undefined, quantidade]}
+        dispose={null}
+        frustumCulled={false}
+      >
+        <meshPhysicalMaterial
+          map={ehFolha ? texturaFolha : null}
+          roughness={ehFolha ? 0.6 : 0.45}
+          clearcoat={ehFolha ? 0.15 : 0.35}
+          side={DoubleSide}
+        />
       </instancedMesh>
     </group>
   )
