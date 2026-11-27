@@ -63,7 +63,10 @@ body {
 }
 
 .logo {
-  color: var(--destaque);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0b4d40;
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -175,19 +178,12 @@ nav a.carrinho {
 }
 
 .loja-logo {
-  display: grid;
   flex: none;
-  place-content: center;
   width: 76px;
   height: 76px;
   border-radius: 14px;
-  background: #fbf7ea;
-  color: #1d2a2c;
-  font-size: 1.15rem;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: 0.06em;
-  text-align: center;
+  background: #f8f7f2;
+  object-fit: cover;
 }
 
 .loja-dados h1 {
@@ -1117,7 +1113,6 @@ input[type='radio'] {
   .loja-logo {
     width: 62px;
     height: 62px;
-    font-size: 0.95rem;
   }
 
   .loja-dados {

@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import Menu from './Menu'
 import Miniatura from './Miniatura'
+import logo from '../assets/logo-simbolo.png'
 import { moeda } from '../data/moeda'
 import { TAXA_ENTREGA, type Recebimento } from '../data/pedido'
 import { pokesProntos } from '../data/prontos'
@@ -26,11 +27,7 @@ export default function Capa() {
           </div>
 
           <div className="loja">
-            <div className="loja-logo" aria-hidden="true">
-              POKE
-              <br />
-              LAB
-            </div>
+            <img className="loja-logo" src={logo} alt="" width={76} height={76} />
             <div className="loja-dados">
               <h1>Poke Lab</h1>
               <p>Rua dos Exemplos, 100 · Centro (endereço fictício)</p>

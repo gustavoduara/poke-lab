@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
 import Menu from './Menu'
+import logo from '../assets/logo-simbolo.png'
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -17,6 +18,7 @@ export default function Layout() {
         <header className="topo">
           <div className="cabecalho">
             <Link to="/" className="logo">
+              <img src={logo} alt="" width={38} height={38} />
               Poke Lab
             </Link>
             <Menu />
