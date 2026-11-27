@@ -1372,3 +1372,114 @@ input[type='radio'] {
     transition: none;
   }
 }
+
+/* ===== animação do pedido finalizado ===== */
+.modal-pedido {
+  width: min(1040px, calc(100% - 24px), calc((100dvh - 150px) * 16 / 9 + 32px));
+  min-width: min(320px, calc(100% - 24px));
+  max-height: calc(100dvh - 16px);
+  overflow: auto;
+  padding: 16px;
+  border: 0;
+  border-radius: 20px;
+  background: #f8fafc;
+  color: #0f2942;
+  text-align: left;
+}
+
+.modal-pedido::backdrop {
+  background: rgba(15, 41, 66, 0.78);
+}
+
+.tela-animacao {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #d7e6ee;
+  border-radius: 14px;
+  background: #f9faf9;
+}
+
+.tela-animacao > div {
+  width: 100%;
+}
+
+.rodape-modal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.rodape-modal p {
+  margin: 0;
+}
+
+.rodape-modal strong {
+  margin-left: 8px;
+  font-size: 1.6rem;
+}
+
+.rodape-modal small {
+  display: block;
+  color: #5b7185;
+}
+
+.botao-lab {
+  padding: 13px 30px;
+  border: 0;
+  border-radius: 999px;
+  background: #0f2942;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.botao-lab:hover,
+.botao-lab:focus-visible {
+  background: #0096c7;
+}
+
+.resumo-celular {
+  display: none;
+}
+
+/* o estúdio onde o poke é fotografado fica fora da tela */
+.estudio {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 800px;
+  height: 800px;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .modal-pedido {
+    width: calc(100% - 16px);
+    padding: 10px;
+  }
+
+  .resumo-celular {
+    display: grid;
+    gap: 6px;
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    list-style: none;
+  }
+
+  .rodape-modal {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .botao-lab {
+    width: 100%;
+  }
+}

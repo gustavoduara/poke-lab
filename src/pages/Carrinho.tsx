@@ -73,7 +73,7 @@ export default function Carrinho() {
           Montar outro poke
         </Link>
         <Link to="/finalizar" className="botao">
-          Finalizar pedido
+          Continuar pedido
         </Link>
       </div>
     </section>

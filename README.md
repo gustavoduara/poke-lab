@@ -21,6 +21,8 @@ Site de um restaurante de poke com um montador de bowl: a pessoa escolhe cada in
 - [x] Página inicial com pokes prontos que se montam em 3D e podem ser personalizados
 - [x] Carrinho com quantidades, salvo no navegador
 - [x] Finalização do pedido (simulada): entrega ou retirada, forma de pagamento e confirmação
+- [x] Animação do pedido finalizado, feita com Remotion, com o poke montado dentro da embalagem
+- [x] Bisnaga em 3D aplicando o molho
 
 O restaurante, o cardápio e os preços são fictícios. Nenhum pedido é enviado ou cobrado, e não há servidor: o carrinho fica salvo apenas no navegador.
 

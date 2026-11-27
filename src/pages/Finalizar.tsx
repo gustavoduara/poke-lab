@@ -163,7 +163,7 @@ export default function Finalizar() {
             Voltar ao carrinho
           </Link>
           <button type="submit" className="botao">
-            Confirmar pedido
+            Finalizar pedido
           </button>
         </div>
       </form>

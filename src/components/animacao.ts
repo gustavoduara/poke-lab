@@ -1,13 +1,17 @@
-import { useCallback, useLayoutEffect, useRef, type RefObject } from 'react'
+import { createContext, useCallback, useContext, useLayoutEffect, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { InstancedMesh, Matrix4 } from 'three'
 
 const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+// Quando verdadeiro, tudo já aparece no lugar final (usado para fotografar o poke).
+export const SemAnimacao = createContext(false)
+
 // Chama "desenhar" a cada quadro com o tempo decorrido, até chegar na duração total.
 // Quando o desenho muda depois de pronto, ele é refeito já no estado final.
 export function useAnimacao(total: number, desenhar: (tempo: number) => void) {
-  const tempo = useRef(semAnimacao ? Infinity : 0)
+  const pronto = useContext(SemAnimacao)
+  const tempo = useRef(semAnimacao || pronto ? Infinity : 0)
 
   useLayoutEffect(() => {
     desenhar(tempo.current)
